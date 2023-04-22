@@ -10,19 +10,13 @@ function showTouchCoords()
 
   print(locTable)
   print(action)
-  print(touchTable)
+  for i,j in touchTable do
+    print(i .. " да " .. j)
+  end
 
   LibTools:highlightPoint(locTable)
 end
 
-
-
-function testHighlight(picName, timeout)
-  btn = find(picName)
-  text = tostring(btn:getTarget()) .. "(" .. btn:getScore() .. ")"
-  btn:highlight(text, 3)
-  click(btn)
-end
 
 function testReadText(picName)
   btn = find(picName)
@@ -32,19 +26,21 @@ function testReadText(picName)
   print(btnText)
 end
 
+adAction = "Реклама"
 titanAction = "Титанит"
 towerAction = "Башня"
-hydraAction = "Гидра"
-adAction = "Реклама"
 testAction = "test"
 closeAction = "Закрыть"
 coordsAction = "Coords"
 adWaitAction = "Подождать и закрыть AD"
+hydraAction = "Гидра"
 
 function actionMenu()
     spinnerSelectedValue = ""
     dialogInit()
-    spinnerItems = {titanAction, towerAction, hydraAction, adAction, testAction, closeAction,coordsAction,adWaitAction}
+    spinnerItems = { adAction, titanAction, towerAction,
+        testAction, closeAction, coordsAction,
+        adWaitAction, hydraAction }
     addTextView("Выберите действие: ")
     addSpinner("spinnerSelectedValue", spinnerItems, adAction)
     newRow()
@@ -52,25 +48,20 @@ function actionMenu()
     return spinnerSelectedValue
 end
 
-
--- todo:
--- при подсветке показывать координаты и степень схожести
-
 -- разработка с таким расширением
 --Settings:setScriptDimension(true, 2340)
 
 -- экран со скрывающимися кнопками
 setImmersiveMode(true)
 
+-- стиль текста при подсветке
 setHighlightTextStyle(0xa5555555, 0xf8eeeeee, 8)
---print(LibTools:hello('123'))
 
 
 --toast("Прочитаем текст")
 --testReadText("town/townCheck.png")
 
 
---action = towerAction
 action = actionMenu()
 if (action == titanAction) then
     Rooms:titanCollect()
