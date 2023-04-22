@@ -9,17 +9,25 @@ adCloseLocation = Location(1940, 140)
 -------------------
 function Rooms:titanCollect()
 -- идём в подземелье
-  if not exists("titan/titanDoor.png") then
+  if not isTitanDoorVisible() then
     toast("Идём в подземелье")
     goToUnderground()
   end
 -- проходим по дверям, пока не достигнем кнопки погружения
-  while not exists("titan/titanDigDeep2.png") do
+  while not isStageCompleted() do
     titanCompleteOneDoor()
   end
   toast("Подземелье закончилось - выходим")
   Rooms:clickClose()
   exitFromGuild()
+end
+
+function isTitanDoorVisible()
+    return exists("titan/titanDoor.png")
+end
+
+function isStageCompleted()
+    return exists("titan/titanDigDeep2.png")
 end
 
 function titanCompleteOneDoor()

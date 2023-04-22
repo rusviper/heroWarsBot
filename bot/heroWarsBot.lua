@@ -62,7 +62,6 @@ end
 -- экран со скрывающимися кнопками
 setImmersiveMode(true)
 
-
 setHighlightTextStyle(0xa5555555, 0xf8eeeeee, 8)
 --print(LibTools:hello('123'))
 
@@ -88,11 +87,18 @@ elseif (action == coordsAction) then
 elseif (action == adWaitAction) then
     Rooms:waitAdEnd(40)
 elseif (action == testAction) then
-   
-    LibTools:exists("titan/titanDigDeep.png")
-    LibTools:exists("titan/titanDigDeep2.png")
-    LibTools:exists("titan/titanDigDeep3.png")
-   
-    
-   -- LibTools:clickOnPicture("town/toGuild5.png")
+
+  picStart = "titan/titanDigDeep"
+  picEnd = ".png"
+
+   table = {}
+   table.q1 = picStart .. picEnd
+   table.q2 = picStart .. "1" .. picEnd
+   table.q3 = picStart .. "2" .. picEnd
+   table.q4 = picStart .. "3" .. picEnd
+   table.q5 = picStart .. "4" .. picEnd
+   LibTools:highlightPics(table)
+
+   LibTools:showAll("titan/titanDigDeep.png")
+   LibTools:findNoException("titan/titanDigDeep.png")
 end

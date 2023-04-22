@@ -1,40 +1,62 @@
 local LibTools = {}
 
 similarity = 0.69
+
+-- расширенный поиск через exists
+function LibTools:findPic(picName, timeout, notVisibleCallback, waitTimeout)
+    if timeout == nil then
+      timeout = 1
+    end
+    if waitTimeout == nil then
+        waitTimeout = 3 -- default exists timeout
+    end
+    toast("Ищем " .. tostring(picName))
+    btn = exists(Pattern(picName):similar(similarity), waitTimeout)
+
+    if btn ~= nil then
+        showVisible(btn)
+        return btn
+    end
+    toast("Не найдено " .. picName)
+    if (notVisibleCallback ~= nil) then
+        notVisibleCallback(picName)
+    end
+    return nil
+end
+
+function LibTools:exists(picName, timeout, notVisibleCallback, waitTimeout)
+    return LibTools:findPic(picName, timeout, notVisibleCallback, waitTimeout)
+end
+
 -- кликает на картинку, перед этим подсвечивает на timeout
 function LibTools:clickOnPicture(picName, timeout, notVisibleCallback, waitTimeout)
+    if notVisibleCallback == nil then
+      notVisibleCallback = printNotVisible
+    end
     found = LibTools:exists(picName, timeout, notVisibleCallback, waitTimeout)
     if found ~= nil then
         click(found)
     end
 end
 
+-- не пишет сообщение, если не найдено
+function LibTools:clickIfVisible(pic)
+    LibTools:clickOnPicture(pic, 1, nil)
+end
+
+-- пишет в окошко, что не найдено
 function printNotVisible(pic)
     print("Изображение не найдено на экране: " .. pic)
 end
 
-function LibTools:clickWithOffset(clickPic, offset)
-    target = Pattern(clickPic):targetOffset(offset)
-    LibTools:clickOnPicture(target)
-end
-
-function LibTools:ifPicClickOnPic(picCheck, picClick)
-  if exists(picCheck) then
-    LibTools:clickOnPicture(picClick)
-  end
-end
-
-
-function LibTools:clickIfVisible(pic, notVisibleCallback)
-    LibTools:clickOnPicture(pic, 1, nil)
-end
-
-
-function LibTools:waitForPicture(picWait, timeout)
-  if timeout == nil then
-    timeout = 1
-  end
-  wait(picWait, timeout)
+-- пишет в попап, что найдено и подсвечивает регион, показывает score
+function showVisible(match, timeout)
+    if timeout == nil then
+      timeout = 1
+    end
+    toast("найдено " .. tostring(btn))
+    text = "" .. btn:getScore()
+    btn:highlight(text, timeout)
 end
 
 -- рисуем квадрат, в центр которого был клик
@@ -48,15 +70,63 @@ function LibTools:highlightPoint(location, timeout, radius)
     Region(location.x - radius, location.y - radius, radius * 2, radius * 2):highlight(timeout)
 end
 
+
+--#########################
+-- клик по изображению в рамках другого изображения
 function LibTools:clickPicOnPic(field, object)
-    fieldMatch = find(field)
+    objectMatch = LibTools:findPicOnPic(field, object)
+    if (objectMatch ~= nil) then
+    click(objectMatch)
+    end
+end
+-- ищет изображение в рамках другого изображения
+function LibTools:findPicOnPic(field, object)
     -- подсветим поле
-    fieldMatch:highlight(0.5)
+    fieldMatch = LibTools:findPic(field, 0.5, printNotVisible)
+    if (fieldMatch == nil) then
+        return nil
+    end
+
     objectMatch = fieldMatch:find(object)
+    if (objectMatch == nil) then
+        printNotVisible(object)
+        return nil
+    end
     -- подсветим объект
-    objectMatch:highlight(0.5)
+    showVisible(objectMatch)
+    return objectMatch
 end
 
+
+--################ НА ТЕСТ
+
+function LibTools:highlightPics(table)
+    for i, m in ipairs(table) do
+        found = LibTools:exists(m)
+        showVisible(found)
+        txt = i .. " : " .. found.getScore()
+        print(txt)
+    end
+end
+
+-- ищем и показываем все совпадения
+function LibTools:showAll(pic)
+    allMatches = findAllNoFindException(pic)
+    mm = list(getLastMatches())
+
+    toast(table.getn(allMatches) .. " штуки найдено")
+        for i, m in ipairs(allMatches) do
+            m:highlight(3)
+            -- showVisible(m)
+        end
+
+    for a in mm do
+            toast(a.getScore() .. " -- " .. a.getTarget())
+        end
+    return mm[index]
+end
+
+-- ищет N-ное изображение из найденных
 function LibTools:findByIndex(pic, index)
     toast("getFindFailedResponse()=" .. getFindFailedResponse())
     --FindFailed.setFindFailedHandler("LibTools:hello")
@@ -66,7 +136,10 @@ function LibTools:findByIndex(pic, index)
     mm = list(getLastMatches())
     toast(table.getn(allMatches) .. " штуки найдено")
     for i, m in ipairs(allMatches) do
-        m:highlight(2)
+        if (i == index)
+            m:highlight(2)
+            return m
+        end
     end
     for a in mm do
         toast(a.getScore() .. " -- " .. a.getTarget())
@@ -83,33 +156,39 @@ function LibTools:findByIndex2(pic, index)
 end
 
 function LibTools:findNoException(pic)
-    allMatches = findAllNoFindException(PS)
+    allMatches = findAllNoFindException(pic)
     return allMatches.next()
 end
 
-function LibTools:exists(picName, timeout, notVisibleCallback, waitTimeout)
-    if timeout == nil then
-      timeout = 1
-    end
-    if (notVisibleCallback == nil) then
-      notVisibleCallback = printNotVisible
-    end
-    if waitTimeout == nil then
-        waitTimeout = 3 -- default exists timeout
-    end
-    toast("Ищем " .. tostring(picName))
-    btn = exists(Pattern(picName):similar(similarity), waitTimeout)
-    toast("найдено " .. tostring(btn))
-    if btn ~= nil then
-        text = "" .. btn:getScore()
-        btn:highlight(text, timeout)
-        return btn
-    end
-    if (notVisibleCallback ~= nil) then
-        notVisibleCallback(picName)
-    end
-    return nil
+-- выполняет действие с использованием одного снимка
+function LibTools:doWithOneSnap(action, p1, p2)
+  usePreviousSnap(true)
+  val = action(p1, p2)
+  usePreviousSnap(false)
+  return val
 end
+
+-- deprecated
+function LibTools:clickWithOffset(clickPic, offset)
+    target = Pattern(clickPic):targetOffset(offset)
+    LibTools:clickOnPicture(target)
+end
+
+-- deprecated
+function LibTools:ifPicClickOnPic(picCheck, picClick)
+  if exists(picCheck) then
+    LibTools:clickOnPicture(picClick)
+  end
+end
+
+-- deprecated
+function LibTools:waitForPicture(picWait, timeout)
+  if timeout == nil then
+    timeout = 1
+  end
+  wait(picWait, timeout)
+end
+
 
 -- тестовый метод
 function LibTools:hello(name)
