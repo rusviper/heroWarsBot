@@ -46,14 +46,6 @@ function actionMenu()
     return spinnerSelectedValue
 end
 
-function tSize(t)
-    size = 0
-    for a,b in pairs(t) do
-        print("" .. a .. "-" .. b)
-        size = size + 1
-    end
-    return size
-end
 
 -- разработка с таким расширением
 --Settings:setScriptDimension(true, 2340)
@@ -94,12 +86,8 @@ elseif (action == testAction) then
    for i = 2,4 do
        table1[i] = picStart .. (i-1) .. picEnd
    end
-   --LibTools:highlightPics(table1)
-   table1["q1"] = 123
+   LibTools:highlightPics(table1)
 
-   toast("table=" .. table1["q1"])
-   toast("getn=" .. table.getn(table1))
-   toast("tSize=" .. tSize(table1))
    --LibTools:showAll("titan/titanDigDeep.png")
    --LibTools:findNoException("titan/titanDigDeep.png")
 end

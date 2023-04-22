@@ -100,18 +100,36 @@ end
 
 --################ НА ТЕСТ
 
+function tableSize(t)
+    size = 0
+    for a,b in pairs(t) do
+        print("" .. a .. "-" .. b)
+        size = size + 1
+    end
+    return size
+end
+
 function LibTools:highlightPics(table)
+    founds = {}
+    usePreviousSnap(true)
     for i, m in pairs(table) do
         found = LibTools:exists(m)
-        txt = getMatchHiText(m, found)
-        found:highlight(txt)
-        print(txt)
+        if (found ~= nil) then
+            txt = getMatchHiText(m, found)
+            found:highlight(txt)
+            print(txt)
+            founds[i] = found
+        end
     end
+    usePreviousSnap(false)
     wait(3)
-    highlightOff()
+    for i, m in pairs(founds) do
+        m:highlightOff()
+    end
 end
 
 function getMatchHiText(pic, match)
+    toast("getMatchHiText" .. typeOf(match))
     return pic .. ": score=" .. match.getScore()
 end
 
