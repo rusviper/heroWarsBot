@@ -54,9 +54,9 @@ function showVisible(match, timeout)
     if timeout == nil then
       timeout = 1
     end
-    toast("найдено " .. tostring(btn))
-    text = "" .. btn:getScore()
-    btn:highlight(text, timeout)
+    toast("найдено " .. tostring(match))
+    text = "" .. match:getScore()
+    match:highlight(text, timeout)
 end
 
 -- рисуем квадрат, в центр которого был клик
@@ -103,7 +103,7 @@ end
 function LibTools:highlightPics(table)
     for i, m in pairs(table) do
         found = LibTools:exists(m)
-        txt = i .. " : " .. found.getScore()
+        txt = getMatchHiText(m, found)
         found:highlight(txt)
         print(txt)
     end
@@ -111,15 +111,19 @@ function LibTools:highlightPics(table)
     highlightOff()
 end
 
+function getMatchHiText(pic, match)
+    return pic .. ": score=" .. match.getScore()
+end
+
 -- ищем и показываем все совпадения
 function LibTools:showAll(pic)
     allMatches = findAllNoFindException(pic)
-    mm = list(getLastMatches())
 
-    toast(table.getn(allMatches) .. " штуки найдено")
-        for i, m in ipairs(allMatches) do
-            m:highlight()
-        end
+    toast(tableSize(allMatches) .. " штуки найдено")
+    for i, m in pairs(allMatches) do
+        txt = getMatchHiText(i, match)
+        m:highlight(txt)
+     end
 
     wait(3)
     highlightOff()
@@ -135,7 +139,7 @@ function LibTools:findByIndex(pic, index)
     mm = list(getLastMatches())
     toast(table.getn(allMatches) .. " штуки найдено")
     for i, m in ipairs(allMatches) do
-        if (i == index)
+        if (i == index) then
             m:highlight(2)
             return m
         end

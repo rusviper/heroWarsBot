@@ -10,9 +10,7 @@ function showTouchCoords()
 
   print(locTable)
   print(action)
-  for i,j in touchTable do
-    print(i .. " да " .. j)
-  end
+  print(touchTable)
 
   LibTools:highlightPoint(locTable)
 end
@@ -46,6 +44,15 @@ function actionMenu()
     newRow()
     dialogShow()
     return spinnerSelectedValue
+end
+
+function tSize(t)
+    size = 0
+    for a,b in pairs(t) do
+        print("" .. a .. "-" .. b)
+        size = size + 1
+    end
+    return size
 end
 
 -- разработка с таким расширением
@@ -82,14 +89,17 @@ elseif (action == testAction) then
   picStart = "titan/titanDigDeep"
   picEnd = ".png"
 
-   table = {}
-   table.q1 = picStart .. picEnd
-   table.q2 = picStart .. "1" .. picEnd
-   table.q3 = picStart .. "2" .. picEnd
-   table.q4 = picStart .. "3" .. picEnd
-   table.q5 = picStart .. "4" .. picEnd
-   LibTools:highlightPics(table)
+   table1 = {}
+   table1[1] = picStart .. picEnd
+   for i = 2,4 do
+       table1[i] = picStart .. (i-1) .. picEnd
+   end
+   --LibTools:highlightPics(table1)
+   table1["q1"] = 123
 
-   LibTools:showAll("titan/titanDigDeep.png")
-   LibTools:findNoException("titan/titanDigDeep.png")
+   toast("table=" .. table1["q1"])
+   toast("getn=" .. table.getn(table1))
+   toast("tSize=" .. tSize(table1))
+   --LibTools:showAll("titan/titanDigDeep.png")
+   --LibTools:findNoException("titan/titanDigDeep.png")
 end
