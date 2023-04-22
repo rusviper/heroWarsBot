@@ -101,12 +101,14 @@ end
 --################ НА ТЕСТ
 
 function LibTools:highlightPics(table)
-    for i, m in ipairs(table) do
+    for i, m in pairs(table) do
         found = LibTools:exists(m)
-        showVisible(found)
         txt = i .. " : " .. found.getScore()
+        found:highlight(txt)
         print(txt)
     end
+    wait(3)
+    highlightOff()
 end
 
 -- ищем и показываем все совпадения
@@ -116,14 +118,11 @@ function LibTools:showAll(pic)
 
     toast(table.getn(allMatches) .. " штуки найдено")
         for i, m in ipairs(allMatches) do
-            m:highlight(3)
-            -- showVisible(m)
+            m:highlight()
         end
 
-    for a in mm do
-            toast(a.getScore() .. " -- " .. a.getTarget())
-        end
-    return mm[index]
+    wait(3)
+    highlightOff()
 end
 
 -- ищет N-ное изображение из найденных
