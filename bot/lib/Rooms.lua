@@ -159,9 +159,10 @@ end
 -----HYDRA---------
 -------------------
 
-function Rooms:hydraCollect()
-    -- перемещаемся к гидре
-    goToHydra()
+-- пока в разработке
+function Rooms:hydraCollectFull()
+    -- перемещаемся к гидрам
+    goToHydras()
     -- идём к последним гидрам
     LibTools:clickIfVisible("hydra/hydra1Next.png")
     -- идём к кошмарной
@@ -172,13 +173,9 @@ function Rooms:hydraCollect()
         toast("Атакуем гидру (" .. i .."/3)")
         if exists(hydraHead) then
             LibTools:clickOnPicture(hydraHead)
-            -- дальше-дальше-в бой
-            LibTools:clickOnPicture("hydra/hydra4NextTeam.png")
-            LibTools:clickOnPicture("hydra/hydra4NextTeam.png")
-            LibTools:clickOnPicture("hydra/hydra5Fight.png")
-            wait(5) -- ждем загрузки боя
-            LibTools:clickOnPicture("hydra/hydra6Pause.png")
-            LibTools:clickOnPicture("hydra/hydra7Skip.png")
+
+            -- забираем одну гидру
+            oneHydraThreeHeads()
         else
             toast("Голова гидры не найдена")
         end
@@ -187,6 +184,49 @@ function Rooms:hydraCollect()
     Rooms:clickClose()
 end
 
+function Rooms:hydraCollect()
+    oneHydraThreeHeads()
+end
+
+function oneHydraThreeHeads()
+    -- выбрана голова и находимся на экране формирования атакующих команд
+    -- нужные герое, есессно, должны быть уже выбраны
+    -- нажимаем "дальше"-"дальше"-"в бой!"
+    select3Teams()
+    -- пропускаем бой
+    hydraTakeHead()
+    -- дожидаемся завершения боя и нажимаем "следующий бой"
+    hydraNextHead()
+    -- пропускаем второй бой
+    hydraTakeHead()
+    hydraNextHead()
+    hydraTakeHead()
+    -- после третьего боя уже кнопка "ОК" и выход к головам
+    hydraEndHeads()
+    -- после этого оказываемся на головах
+end
+
+function select3Teams()
+    -- нажимаем "дальше"-"дальше"-"в бой!"
+    LibTools:clickOnPicture("hydra/hydra4NextTeam.png")
+    LibTools:clickOnPicture("hydra/hydra4NextTeam.png")
+    LibTools:clickOnPicture("hydra/hydra5Fight.png")
+end
+
+function hydraTakeHead()
+    -- атака уже началась (нажали "" или "следующий бой")
+    wait(5) -- ждем загрузки боя
+    LibTools:clickOnPicture("hydra/hydra6Pause.png")
+    LibTools:clickOnPicture("hydra/hydra7Skip.png")
+end
+
+function hydraNextHead()
+    LibTools:clickOnPicture("hydra/hydra8NextHead.png")
+end
+
+function hydraEndHeads()
+    LibTools:clickOnPicture("hydra/hydra9Ok.png")
+end
 --------------------
 -----OUTLAND--------
 --------------------
@@ -238,7 +278,7 @@ function Rooms:clickCloseTower()
     Rooms:clickClose()
 end
 
-function goToHydra()
+function goToHydras()
     toast("Идем к гидре")
     if isOnTown() then
         goToGuild()
