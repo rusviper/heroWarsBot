@@ -80,14 +80,29 @@ elseif (action == testAction) then
 
   picStart = "titan/titanDigDeep"
   picEnd = ".png"
-
+  count = 4
    table1 = {}
    table1[1] = picStart .. picEnd
-   for i = 2,4 do
+   for i = 2,count do
        table1[i] = picStart .. (i-1) .. picEnd
    end
    LibTools:highlightPics(table1)
 
+   -- ищет первое совпадение и его возвращает. проверить, работает ли
+   found = LibTools:findFirstOf(table1)
+   if (found ~= nil) then toast("findFirstOf работает: " .. found) end
+
+   -- попробовать (ищет все по одному фото). используется делегат
    --LibTools:showAll("titan/titanDigDeep.png")
+
+   -- попробовать (ищет без ошибки)
    --LibTools:findNoException("titan/titanDigDeep.png")
+
+   -- попробовать (ищет без ошибки)
+   --LibTools:findNoException("titan/titanDigDeep.png")
+
+   -- тут findAllByColumn
+   -- LibTools:findByIndex2(pic, index)
+
+
 end

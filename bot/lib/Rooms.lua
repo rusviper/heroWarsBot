@@ -2,22 +2,32 @@ local LibTools = require('LibTools')
 
 local Rooms = {}
 
+toastOn = true
 
 adCloseLocation = Location(1940, 140)
+
+-------------------
+------TOOLS--------
+-------------------
+
+function roomsToast(text)
+    LibTools:ifToast(toastText, toastOn)
+end
+
 -------------------
 ------TITANS-------
 -------------------
 function Rooms:titanCollect()
 -- идём в подземелье
   if not isTitanDoorVisible() then
-    toast("Идём в подземелье")
+    roomsToast("Идём в подземелье")
     goToUnderground()
   end
 -- проходим по дверям, пока не достигнем кнопки погружения
   while not isStageCompleted() do
     titanCompleteOneDoor()
   end
-  toast("Подземелье закончилось - выходим")
+  roomsToast("Подземелье закончилось - выходим")
   Rooms:clickClose()
   exitFromGuild()
 end
@@ -31,7 +41,7 @@ function isStageCompleted()
 end
 
 function titanCompleteOneDoor()
-  toast("Соберём и эту дверь")
+  roomsToast("Соберём и эту дверь")
   -- жмём на дверь "в бой"
   LibTools:clickOnPicture("titan/titanDoor.png")
   -- жмём на кнопку "напасть"
@@ -46,12 +56,14 @@ end
 ------TOWER--------
 -------------------
 
+towerManualLoc = Location(770, 670)
+
 firstChest = "tower/tower3ChestLong.png"
 smallChest = "tower/tower3ChestBig.png"
 lastChest = "tower/tower6LastChestBig.png"
 
 function isChestVisible()
-   toast("Есть че по сундукам?")
+   roomsToast("Есть че по сундукам?")
    return exists(firstChest) or exists(smallChest, 0) or exists(lastChest, 0)
 end
 
@@ -61,29 +73,27 @@ function Rooms:towerCollect()
     -- идем до чемодана
     -- вместо exists использовать wait
     if not isChestVisible() then
-        toast("переходим к сундукам")
+        roomsToast("переходим к сундукам")
         LibTools:clickIfVisible("tower/tower1Start.png")
-        LibTools:clickIfVisible("tower/tower2manual.png")
+        --LibTools:clickIfVisible("tower/tower2manual.png")
+        wait(1)
+        click(towerManualLoc)
     end
     -- итерируем по чемоданам
     -- чемоданы отличаются по этажам?
-    if not isChestVisible() then
-        toast("Чемодан не найден :(")
-    else
-        while isChestVisible() do
+    while isChestVisible() do
         LibTools:clickIfVisible(firstChest)
         LibTools:clickIfVisible(smallChest)
         LibTools:clickIfVisible(lastChest)
-           -- LibTools:clickOnPicture(smallChest)
-            LibTools:clickOnPicture("tower/tower4Open.png")
-            if not exists("tower/tower5Next.png") then
-                -- если нет кнопки 5, то это был последний этаж - выходим
-                toast("Башня закончилась")
-                break
-            end
-            LibTools:clickOnPicture("tower/tower5Next.png")
-            wait(1)
+        -- LibTools:clickOnPicture(smallChest)
+        LibTools:clickOnPicture("tower/tower4Open.png")
+        if not exists("tower/tower5Next.png") then
+            -- если нет кнопки 5, то это был последний этаж - выходим
+            roomsToast("Башня закончилась")
+            break
         end
+        LibTools:clickOnPicture("tower/tower5Next.png")
+        wait(1)
     end
 
     Rooms:clickClose()
@@ -100,11 +110,11 @@ end
 function Rooms:adCollect()
 -- идём к девке
   if isOnTown() then
-    toast("Переходим к рекламным сундукам")
+    roomsToast("Переходим к рекламным сундукам")
     LibTools:clickOnPicture("ad/ad1Girl.png")
     wait(3) -- ждем вращения сундуков
     else
-    toast("Находимся не в деревне")
+    roomsToast("Находимся не в деревне")
   end
   
   if LibTools:exists("ad/ad2Box.png") then
@@ -115,7 +125,7 @@ function Rooms:adCollect()
       adCollectOneByStartPic("ad/ad4Shop.png")
   end
  
-  toast("Больше не видно рекламы")
+  roomsToast("Больше не видно рекламы")
   -- выходим в город
   wait(1)
   Rooms:clickClose()
@@ -124,7 +134,7 @@ end
 -- собираем рекламу, пока видна кнопка
 function adCollectOneByStartPic(adButton)
   while LibTools:exists(adButton) do
-    toast("Собираем рекламку")
+    roomsToast("Собираем рекламку")
     LibTools:clickOnPicture(adButton)
     -- ждём окончания рекламы до 40 сек
     --wait(40)
@@ -132,7 +142,7 @@ function adCollectOneByStartPic(adButton)
     -- todo попробовать по картинке снова, по условию
     --click(Location(2130, 175))
     if not Rooms:waitAdEnd(40) then
-        toast("Не смогли закрыть рекламу")
+        roomsToast("Не смогли закрыть рекламу")
         click(adCloseLocation)
     end
     -- ждём, пока одуплится следующая реклама
@@ -170,14 +180,14 @@ function Rooms:hydraCollectFull()
     -- todo определять доступные головы
     hydraHead = "hydra/hydra3water.png"
     for i=1,3 do
-        toast("Атакуем гидру (" .. i .."/3)")
+        roomsToast("Атакуем гидру (" .. i .."/3)")
         if exists(hydraHead) then
             LibTools:clickOnPicture(hydraHead)
 
             -- забираем одну гидру
             oneHydraThreeHeads()
         else
-            toast("Голова гидры не найдена")
+            roomsToast("Голова гидры не найдена")
         end
     end
     -- выходим из гидры
@@ -262,24 +272,15 @@ end
 -----NAVIGATION----
 -------------------
 
---- большинство закрытий работают так, кроме башни
+--- закрытие интерфейса в игре
 function Rooms:clickClose()
     closeBtn = "town/close.png"
-    toast("Жмем на крестик")
+    roomsToast("Жмем на крестик")
     LibTools:clickIfVisible(closeBtn)
 end
 
---- большинство закрытие для башни, но не работает в других местах
--- todo найти универсальный скриншот
-function Rooms:clickCloseTower()
-    closeBtn = "tower/tower7Close.png"
-    toast("Жмем на крестик в башне")
-    --LibTools:clickIfVisible(closeBtn)
-    Rooms:clickClose()
-end
-
 function goToHydras()
-    toast("Идем к гидре")
+    roomsToast("Идем к гидре")
     if isOnTown() then
         goToGuild()
     end
@@ -292,7 +293,7 @@ function goToHydras()
 end
 
 function goToUnderground()
-    toast("Идем в подземелье")
+    roomsToast("Идем в подземелье")
     if isOnTown() then
         goToGuild()
     end
@@ -302,7 +303,7 @@ function goToUnderground()
 end
 
 function goToTower()
-    toast("Идем в башню")
+    roomsToast("Идем в башню")
     if isOnTown() then
         LibTools:clickOnPicture("town/tower.png")
     end

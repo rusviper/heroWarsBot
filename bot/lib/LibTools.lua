@@ -1,6 +1,7 @@
 local LibTools = {}
 
 similarity = 0.69
+toastOn = true
 
 -- расширенный поиск через exists
 function LibTools:findPic(picName, timeout, notVisibleCallback, waitTimeout)
@@ -10,18 +11,31 @@ function LibTools:findPic(picName, timeout, notVisibleCallback, waitTimeout)
     if waitTimeout == nil then
         waitTimeout = 3 -- default exists timeout
     end
-    toast("Ищем " .. tostring(picName))
+    LibTools:toast("Ищем " .. tostring(picName))
     btn = exists(Pattern(picName):similar(similarity), waitTimeout)
 
     if btn ~= nil then
         showVisible(btn)
         return btn
     end
-    toast("Не найдено " .. picName)
+    LibTools:toast("Не найдено " .. picName)
     if (notVisibleCallback ~= nil) then
         notVisibleCallback(picName)
     end
     return nil
+end
+
+function LibTools:toast(toastText)
+    LibTools:ifToast(toastText, toastOn)
+end
+
+function LibTools:ifToast(toastText, condition)
+    if condition == nil then
+        condition = toastOn
+    end
+    if condition then
+        toast(toastText)
+    end
 end
 
 function LibTools:exists(picName, timeout, notVisibleCallback, waitTimeout)
@@ -54,7 +68,7 @@ function showVisible(match, timeout)
     if timeout == nil then
       timeout = 1
     end
-    toast("найдено " .. tostring(match))
+    LibTools:toast("найдено " .. tostring(match))
     text = "" .. match:getScore()
     match:highlight(text, timeout)
 end
@@ -111,51 +125,62 @@ end
 
 function LibTools:highlightPics(table)
     founds = {}
-    usePreviousSnap(true)
+    --usePreviousSnap(true)
     for i, m in pairs(table) do
         found = LibTools:exists(m)
         if (found ~= nil) then
-            txt = getMatchHiText(m, found)
-            found:highlight(txt)
-            print(txt)
+            found:highlight(2, getMatchHiText(m, found))
+            print(getMatchPrintText(m, found))
             founds[i] = found
         end
     end
-    usePreviousSnap(false)
-    wait(3)
-    for i, m in pairs(founds) do
-        m:highlightOff()
-    end
+    --usePreviousSnap(false)
+    --wait(3)
+    --for i, m in pairs(founds) do
+    --    m:highlightOff()
+    --end
 end
 
 function getMatchHiText(pic, match)
-    toast("getMatchHiText" .. typeOf(match))
-    return pic .. ": score=" .. match.getScore()
+    return "" .. match:getScore()
 end
 
--- ищем и показываем все совпадения
+function getMatchPrintText(pic, match)
+    return pic .. ": score=" .. match:getScore()
+end
+
+-- ищем и показываем все совпадения по одной картинке
 function LibTools:showAll(pic)
     allMatches = findAllNoFindException(pic)
 
-    toast(tableSize(allMatches) .. " штуки найдено")
+    LibTools:toast(tableSize(allMatches) .. " штуки найдено")
     for i, m in pairs(allMatches) do
-        txt = getMatchHiText(i, match)
-        m:highlight(txt)
-     end
+        m:highlight(0, getMatchHiText(i, match))
+    end
 
     wait(3)
-    highlightOff()
+    -- а так работает?
+    iterateTable(allMatches, function(i, m)
+            toast("Работает! " .. i)
+            m:highlightOff()
+        end
+    )
+end
+
+function iterateTable(table, action)
+    for i, m in pairs(allMatches) do
+        action(i, m)
+    end
 end
 
 -- ищет N-ное изображение из найденных
 function LibTools:findByIndex(pic, index)
-    toast("getFindFailedResponse()=" .. getFindFailedResponse())
-    --FindFailed.setFindFailedHandler("LibTools:hello")
+    LibTools:toast("getFindFailedResponse()=" .. getFindFailedResponse())
     FindFailed.setFindFailedResponse("PROMPT")
     allMatches = findAllNoFindException(PS)
     -- сохраняем в лист для повторного использования
-    mm = list(getLastMatches())
-    toast(table.getn(allMatches) .. " штуки найдено")
+    --mm = list(getLastMatches())
+    toast(tableSize(allMatches) .. " штуки найдено")
     for i, m in ipairs(allMatches) do
         if (i == index) then
             m:highlight(2)
@@ -172,7 +197,7 @@ function LibTools:findByIndex2(pic, index)
     toast("getFindFailedResponse()")
     list = findAllByColumn(pic)
 
-    toast("len(list)" .. len(list))
+    toast("len(list)" .. tableSize(list))
     return list.get(index)
 end
 
@@ -187,6 +212,34 @@ function LibTools:doWithOneSnap(action, p1, p2)
   val = action(p1, p2)
   usePreviousSnap(false)
   return val
+end
+
+
+-- параметры пакует в таблицу
+function listToTable(a1, a2, a3, a4, a5)
+    rval = {}
+    if a1 ~= nil then rval[1] = a1 else return rval end
+    if a2 ~= nil then rval[2] = a2 else return rval end
+    if a3 ~= nil then rval[3] = a3 else return rval end
+    if a4 ~= nil then rval[4] = a4 else return rval end
+    if a5 ~= nil then rval[5] = a5 else return rval end
+    return rval
+end
+-- ищем первое совпадение по списку изображений. Найденное возвращаем
+function findFirstOfList(pic1, pic2, pic3, pic4, pic5)
+    findFirstOf(listToTable(pic1, pic2, pic3, pic4, pic5))
+end
+-- ищем первое совпадение по списку изображений. Найденное возвращаем
+function findFirstOf(picTable)
+    for i, m in pairs(picTable) do
+        found = LibTools:exists(m)
+        if (found ~= nil) then
+            found:highlight(2, getMatchHiText(m, found))
+            print(getMatchPrintText(m, found))
+            return found
+        end
+    end
+    LibTools:toast("Не найдено ничего из " .. tableSize(picTable) .. " изображений")
 end
 
 -- deprecated
