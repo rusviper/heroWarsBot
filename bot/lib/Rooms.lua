@@ -10,7 +10,7 @@ adCloseLocation = Location(1940, 140)
 ------TOOLS--------
 -------------------
 
-function roomsToast(text)
+function roomsToast(toastText)
     LibTools:ifToast(toastText, toastOn)
 end
 
@@ -56,15 +56,16 @@ end
 ------TOWER--------
 -------------------
 
-towerManualLoc = Location(770, 670)
+towerManualLoc = Location(780, 670)
+towerNextLoc = Location(1250, 810)
 
-firstChest = "tower/tower3ChestLong.png"
-smallChest = "tower/tower3ChestBig.png"
-lastChest = "tower/tower6LastChestBig.png"
+firstChest = "tower/tower3Chest1.png"
+smallChest = "tower/tower3Chest.png"
+lastChest = "tower/tower6LastChest.png"
 
-function isChestVisible()
+function findChest()
    roomsToast("Есть че по сундукам?")
-   return exists(firstChest) or exists(smallChest, 0) or exists(lastChest, 0)
+   return LibTools:findFirstOfList(firstChest, smallChest, lastChest)
 end
 
 function Rooms:towerCollect()
@@ -72,28 +73,38 @@ function Rooms:towerCollect()
 
     -- идем до чемодана
     -- вместо exists использовать wait
-    if not isChestVisible() then
+    foundChest = findChest()
+    if not foundChest then
         roomsToast("переходим к сундукам")
         LibTools:clickIfVisible("tower/tower1Start.png")
-        --LibTools:clickIfVisible("tower/tower2manual.png")
-        wait(1)
-        click(towerManualLoc)
+        LibTools:clickIfVisible("tower/tower2manual.png")
+        --wait(1)
+        --click(towerManualLoc)
+	foundChest = findChest()
     end
+
     -- итерируем по чемоданам
-    -- чемоданы отличаются по этажам?
-    while isChestVisible() do
-        LibTools:clickIfVisible(firstChest)
-        LibTools:clickIfVisible(smallChest)
-        LibTools:clickIfVisible(lastChest)
-        -- LibTools:clickOnPicture(smallChest)
-        LibTools:clickOnPicture("tower/tower4Open.png")
-        if not exists("tower/tower5Next.png") then
+    -- чемоданы отличаются по этажам
+    -- искать чемодан только один раз
+    for stage=1,20 do
+    	if not foundChest then
+    		roomsToast("Сундук не найден, выходим")
+    		break
+	end
+    	roomsToast("Собираем этаж " .. stage)
+    	
+    	click(foundChest)
+    	LibTools:clickOnPicture("tower/tower4Open.png")
+	nextBtn = LibTools:clickIfVisible("tower/tower5Next.png")
+    
+    	if not nextBtn then
             -- если нет кнопки 5, то это был последний этаж - выходим
             roomsToast("Башня закончилась")
             break
         end
-        LibTools:clickOnPicture("tower/tower5Next.png")
-        wait(1)
+    
+    	wait(2)
+    	foundChest = findChest()
     end
 
     Rooms:clickClose()

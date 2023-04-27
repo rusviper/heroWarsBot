@@ -1,6 +1,7 @@
 local LibTools = {}
 
-similarity = 0.69
+--similarity = 0.69
+similarity = 0.65
 toastOn = true
 
 -- расширенный поиск через exists
@@ -51,11 +52,12 @@ function LibTools:clickOnPicture(picName, timeout, notVisibleCallback, waitTimeo
     if found ~= nil then
         click(found)
     end
+    return found
 end
 
 -- не пишет сообщение, если не найдено
 function LibTools:clickIfVisible(pic)
-    LibTools:clickOnPicture(pic, 1, nil)
+    return LibTools:clickOnPicture(pic, 1, nil)
 end
 
 -- пишет в окошко, что не найдено
@@ -68,7 +70,7 @@ function showVisible(match, timeout)
     if timeout == nil then
       timeout = 1
     end
-    LibTools:toast("найдено " .. tostring(match))
+    --LibTools:toast("найдено " .. tostring(match))
     text = "" .. match:getScore()
     match:highlight(text, timeout)
 end
@@ -111,17 +113,46 @@ function LibTools:findPicOnPic(field, object)
     return objectMatch
 end
 
+--==== FIND FIRST
 
---################ НА ТЕСТ
+-- параметры пакует в таблицу
+function listToTable(a1, a2, a3, a4, a5)
+    rval = {}
+    if a1 ~= nil then rval[1] = a1 else return rval end
+    if a2 ~= nil then rval[2] = a2 else return rval end
+    if a3 ~= nil then rval[3] = a3 else return rval end
+    if a4 ~= nil then rval[4] = a4 else return rval end
+    if a5 ~= nil then rval[5] = a5 else return rval end
+    return rval
+end
+-- ищем первое совпадение по списку изображений. Найденное возвращаем
+function LibTools:findFirstOfList(pic1, pic2, pic3, pic4, pic5)
+    LibTools:findFirstOf(listToTable(pic1, pic2, pic3, pic4, pic5))
+end
+-- ищем первое совпадение по списку изображений. Найденное возвращаем
+function LibTools:findFirstOf(picTable)
+    for i, m in pairs(picTable) do
+        found = LibTools:exists(m)
+        if (found ~= nil) then
+            hiText = getMatchHiText(m, found)
+            found:highlight(hiText, 2)
+            print(getMatchPrintText(m, found))
+            return found
+        end
+    end
+    LibTools:toast("Не найдено ничего из " .. tableSize(picTable) .. " изображений")
+end
 
 function tableSize(t)
     size = 0
     for a,b in pairs(t) do
-        print("" .. a .. "-" .. b)
+        --print("" .. a .. "-" .. tostring(b))
         size = size + 1
     end
     return size
 end
+
+--==== MASS HIGHLIGHT
 
 function LibTools:highlightPics(table)
     founds = {}
@@ -129,7 +160,8 @@ function LibTools:highlightPics(table)
     for i, m in pairs(table) do
         found = LibTools:exists(m)
         if (found ~= nil) then
-            found:highlight(2, getMatchHiText(m, found))
+            hiText = getMatchHiText(m, found)
+            found:highlight(hiText, 2)
             print(getMatchPrintText(m, found))
             founds[i] = found
         end
@@ -149,20 +181,25 @@ function getMatchPrintText(pic, match)
     return pic .. ": score=" .. match:getScore()
 end
 
+
+--################ НА ТЕСТ
+
+
 -- ищем и показываем все совпадения по одной картинке
 function LibTools:showAll(pic)
     allMatches = findAllNoFindException(pic)
-
-    LibTools:toast(tableSize(allMatches) .. " штуки найдено")
+    LibTools:toast("Всего видно " .. tableSize(allMatches) .. " штук")
     for i, m in pairs(allMatches) do
-        m:highlight(0, getMatchHiText(i, match))
+    	hiText = getMatchHiText(i, m)
+        m:highlight()
+        print(getMatchPrintText(i, m))
     end
 
     wait(3)
-    -- а так работает?
+    -- а так работает? Работает!
     iterateTable(allMatches, function(i, m)
             toast("Работает! " .. i)
-            m:highlightOff()
+            --m:highlightOff()
         end
     )
 end
@@ -215,32 +252,9 @@ function LibTools:doWithOneSnap(action, p1, p2)
 end
 
 
--- параметры пакует в таблицу
-function listToTable(a1, a2, a3, a4, a5)
-    rval = {}
-    if a1 ~= nil then rval[1] = a1 else return rval end
-    if a2 ~= nil then rval[2] = a2 else return rval end
-    if a3 ~= nil then rval[3] = a3 else return rval end
-    if a4 ~= nil then rval[4] = a4 else return rval end
-    if a5 ~= nil then rval[5] = a5 else return rval end
-    return rval
-end
--- ищем первое совпадение по списку изображений. Найденное возвращаем
-function findFirstOfList(pic1, pic2, pic3, pic4, pic5)
-    findFirstOf(listToTable(pic1, pic2, pic3, pic4, pic5))
-end
--- ищем первое совпадение по списку изображений. Найденное возвращаем
-function findFirstOf(picTable)
-    for i, m in pairs(picTable) do
-        found = LibTools:exists(m)
-        if (found ~= nil) then
-            found:highlight(2, getMatchHiText(m, found))
-            print(getMatchPrintText(m, found))
-            return found
-        end
-    end
-    LibTools:toast("Не найдено ничего из " .. tableSize(picTable) .. " изображений")
-end
+
+
+
 
 -- deprecated
 function LibTools:clickWithOffset(clickPic, offset)

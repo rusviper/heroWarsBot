@@ -78,7 +78,7 @@ elseif (action == adWaitAction) then
     Rooms:waitAdEnd(40)
 elseif (action == testAction) then
 
-  picStart = "titan/titanDigDeep"
+  picStart = "tower/tower3Chest"
   picEnd = ".png"
   count = 4
    table1 = {}
@@ -88,12 +88,12 @@ elseif (action == testAction) then
    end
    LibTools:highlightPics(table1)
 
-   -- ищет первое совпадение и его возвращает. проверить, работает ли
-   found = LibTools:findFirstOf(table1)
-   if (found ~= nil) then toast("findFirstOf работает: " .. found) end
+   -- ищет первое совпадение и его возвращает. проверить, работает ли. Работает!
+   --found = LibTools:findFirstOf(table1)
+   --if (found ~= nil) then toast("findFirstOf работает: " .. found:getScore()) end
 
-   -- попробовать (ищет все по одному фото). используется делегат
-   --LibTools:showAll("titan/titanDigDeep.png")
+   -- попробовать (ищет все по одному фото). используется делегат. Работает!
+   --LibTools:showAll(table1[1])
 
    -- попробовать (ищет без ошибки)
    --LibTools:findNoException("titan/titanDigDeep.png")
