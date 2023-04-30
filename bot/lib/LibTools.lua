@@ -1,7 +1,7 @@
 local LibTools = {}
 
---similarity = 0.69
-similarity = 0.65
+similarity = 0.69
+--similarity = 0.5
 toastOn = true
 
 -- расширенный поиск через exists
@@ -14,6 +14,30 @@ function LibTools:findPic(picName, timeout, notVisibleCallback, waitTimeout)
     end
     LibTools:toast("Ищем " .. tostring(picName))
     btn = exists(Pattern(picName):similar(similarity), waitTimeout)
+
+    if btn ~= nil then
+        showVisible(btn)
+        return btn
+    end
+    LibTools:toast("Не найдено " .. picName)
+    if (notVisibleCallback ~= nil) then
+        notVisibleCallback(picName)
+    end
+    return nil
+end
+
+function LibTools:findPicOnRegion(region, picName, timeout, notVisibleCallback, waitTimeout)
+    if timeout == nil then
+      timeout = 1
+    end
+    if waitTimeout == nil then
+        waitTimeout = 3 -- default exists timeout
+    end
+    if (region == nil) then
+    	region = getGameArea()
+    end
+    LibTools:toast("Ищем " .. tostring(picName))
+    btn = region:exists(Pattern(picName):similar(similarity), waitTimeout)
 
     if btn ~= nil then
         showVisible(btn)
@@ -127,20 +151,24 @@ function listToTable(a1, a2, a3, a4, a5)
 end
 -- ищем первое совпадение по списку изображений. Найденное возвращаем
 function LibTools:findFirstOfList(pic1, pic2, pic3, pic4, pic5)
-    LibTools:findFirstOf(listToTable(pic1, pic2, pic3, pic4, pic5))
+    return LibTools:findFirstOf(listToTable(pic1, pic2, pic3, pic4, pic5))
 end
 -- ищем первое совпадение по списку изображений. Найденное возвращаем
 function LibTools:findFirstOf(picTable)
+    snapshot()
     for i, m in pairs(picTable) do
         found = LibTools:exists(m)
         if (found ~= nil) then
             hiText = getMatchHiText(m, found)
             found:highlight(hiText, 2)
             print(getMatchPrintText(m, found))
+            usePreviousSnap(false)
             return found
         end
     end
+    usePreviousSnap(false)
     LibTools:toast("Не найдено ничего из " .. tableSize(picTable) .. " изображений")
+    return nil
 end
 
 function tableSize(t)
@@ -156,7 +184,7 @@ end
 
 function LibTools:highlightPics(table)
     founds = {}
-    --usePreviousSnap(true)
+    snapshot()
     for i, m in pairs(table) do
         found = LibTools:exists(m)
         if (found ~= nil) then
@@ -166,11 +194,7 @@ function LibTools:highlightPics(table)
             founds[i] = found
         end
     end
-    --usePreviousSnap(false)
-    --wait(3)
-    --for i, m in pairs(founds) do
-    --    m:highlightOff()
-    --end
+    usePreviousSnap(false)
 end
 
 function getMatchHiText(pic, match)

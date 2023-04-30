@@ -65,22 +65,33 @@ lastChest = "tower/tower6LastChest.png"
 
 function findChest()
    roomsToast("Есть че по сундукам?")
-   return LibTools:findFirstOfList(firstChest, smallChest, lastChest)
+   chest = LibTools:findFirstOfList(firstChest, smallChest, lastChest)
+   if (chest ~= nil) then
+   	roomsToast("Сундук найден! " .. tostring(chest:getTarget()))
+   else
+   	roomsToast("Сундук не найден! =(")
+   end
+   return chest
 end
 
 function Rooms:towerCollect()
-    goToTower()
-
-    -- идем до чемодана
-    -- вместо exists использовать wait
     foundChest = findChest()
-    if not foundChest then
-        roomsToast("переходим к сундукам")
-        LibTools:clickIfVisible("tower/tower1Start.png")
-        LibTools:clickIfVisible("tower/tower2manual.png")
-        --wait(1)
-        --click(towerManualLoc)
-	foundChest = findChest()
+    if foundChest == nil then
+	  goToTower()
+	  foundChest = findChest()
+    end
+    if foundChest == nil then
+	  roomsToast("переходим к сундукам")
+      LibTools:clickIfVisible("tower/tower1Start.png")
+      LibTools:clickIfVisible("tower/tower2manual.png")
+      --wait(1)
+      --click(towerManualLoc)
+	  foundChest = findChest()
+    end
+
+    if foundChest == nil then
+        roomsToast("Сундук не найден, выходим")
+    	return
     end
 
     -- итерируем по чемоданам
@@ -92,25 +103,33 @@ function Rooms:towerCollect()
     		break
 	end
     	roomsToast("Собираем этаж " .. stage)
-    	
+
     	click(foundChest)
     	LibTools:clickOnPicture("tower/tower4Open.png")
-	nextBtn = LibTools:clickIfVisible("tower/tower5Next.png")
-    
-    	if not nextBtn then
+    	nextBtn = findTowerNext()
+
+    	if nextBtn == nil then
             -- если нет кнопки 5, то это был последний этаж - выходим
             roomsToast("Башня закончилась")
             break
+        else
+        	click(nextBtn)
         end
-    
+
     	wait(2)
     	foundChest = findChest()
     end
 
     Rooms:clickClose()
     -- выходим на площадь
+    -- todo тут нажимается на неактивный видимый крестик, ограничить регион
     Rooms:clickClose()
     Rooms:clickClose()
+end
+
+function findTowerNext()
+	bereich = Region(1300, 600, 600, 400)
+	return LibTools:findPicOnRegion(bereich, "tower/tower5Next.png")
 end
 
 -------------------
@@ -124,18 +143,17 @@ function Rooms:adCollect()
     roomsToast("Переходим к рекламным сундукам")
     LibTools:clickOnPicture("ad/ad1Girl.png")
     wait(3) -- ждем вращения сундуков
-    else
+  else
     roomsToast("Находимся не в деревне")
   end
-  
-  if LibTools:exists("ad/ad2Box.png") then
-      adCollectOneByStartPic("ad/ad2Box.png")
-  end
+
+
+  adCollectOneByStartPic("ad/ad2Box.png")
+
   LibTools:clickIfVisible("ad/ad3ToShop.png")
-  if LibTools:exists("ad/ad4Shop.png") then
-      adCollectOneByStartPic("ad/ad4Shop.png")
-  end
- 
+
+  adCollectOneByStartPic("ad/ad4Shop.png")
+
   roomsToast("Больше не видно рекламы")
   -- выходим в город
   wait(1)
@@ -144,30 +162,29 @@ end
 
 -- собираем рекламу, пока видна кнопка
 function adCollectOneByStartPic(adButton)
-  while LibTools:exists(adButton) do
+  adBtn = LibTools:exists(adButton)
+  while adBtn ~= nil do
     roomsToast("Собираем рекламку")
-    LibTools:clickOnPicture(adButton)
+    click(adBtn)
     -- ждём окончания рекламы до 40 сек
-    --wait(40)
-    -- тыкаем в крестик (по координатам, т.к. он почти невидимый)
-    -- todo попробовать по картинке снова, по условию
-    --click(Location(2130, 175))
     if not Rooms:waitAdEnd(40) then
         roomsToast("Не смогли закрыть рекламу")
         click(adCloseLocation)
     end
     -- ждём, пока одуплится следующая реклама
     wait(7)
+    adBtn = LibTools:exists(adButton)
   end
 end
 closeAdPic = "ad/ad5Close.png"
 function Rooms:closeAd()
     return LibTools:clickOnPicture(closeAdPic)
 end
+
 -- найти крестик, подождать 3 сек и ткнуть в то место
 function Rooms:waitAdEnd(timeout)
     rval = LibTools:clickOnPicture(closeAdPic, 1, nil, timeout)
-    if rval ~= nil then return false end
+    if rval == nil then return false end
     -- после первого нажатия снова появляется ещё один крестик
     -- пробуем подождать его, но ничего, если не получится
     wait(2)

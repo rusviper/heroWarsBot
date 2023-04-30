@@ -48,7 +48,7 @@ end
 
 
 -- разработка с таким расширением
---Settings:setScriptDimension(true, 2340)
+Settings:setScriptDimension(true, 2340)
 
 -- экран со скрывающимися кнопками
 setImmersiveMode(true)
@@ -93,7 +93,7 @@ elseif (action == testAction) then
    --if (found ~= nil) then toast("findFirstOf работает: " .. found:getScore()) end
 
    -- попробовать (ищет все по одному фото). используется делегат. Работает!
-   --LibTools:showAll(table1[1])
+   LibTools:showAll(table1[1])
 
    -- попробовать (ищет без ошибки)
    --LibTools:findNoException("titan/titanDigDeep.png")
