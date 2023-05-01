@@ -50,18 +50,7 @@ function LibTools:findPicOnRegion(region, picName, timeout, notVisibleCallback, 
     return nil
 end
 
-function LibTools:toast(toastText)
-    LibTools:ifToast(toastText, toastOn)
-end
 
-function LibTools:ifToast(toastText, condition)
-    if condition == nil then
-        condition = toastOn
-    end
-    if condition then
-        toast(toastText)
-    end
-end
 
 function LibTools:exists(picName, timeout, notVisibleCallback, waitTimeout)
     return LibTools:findPic(picName, timeout, notVisibleCallback, waitTimeout)
@@ -75,8 +64,9 @@ function LibTools:clickOnPicture(picName, timeout, notVisibleCallback, waitTimeo
     found = LibTools:exists(picName, timeout, notVisibleCallback, waitTimeout)
     if found ~= nil then
         click(found)
+        return found
     end
-    return found
+    return nil
 end
 
 -- не пишет сообщение, если не найдено
@@ -204,6 +194,55 @@ end
 function getMatchPrintText(pic, match)
     return pic .. ": score=" .. match:getScore()
 end
+
+
+--################ PRINTING ################
+
+-- стиль текста при подсветке
+
+function LibTools:setTargetTextStyle()
+	setHighlightTextStyle(0xa5555555, 0xf8eeeeee, 8)
+end
+
+function LibTools:setStatusTextStyle()
+	setHighlightTextStyle(0xcc222222, 0xfffcf560, 12)
+end
+
+
+-- пишем в статус регион
+--statusRegion = Region(1700, 950, 600, 150)	-- справа снизу
+--statusRegion = Region(20, 1000, 2300, 100)	-- снизу узко
+statusRegion = Region(20, 0, 2300, 100)		-- сверху узко
+
+function LibTools:status(text, timeout)
+    if timeout == nil then
+        timeout = 3
+    end
+    LibTools:setStatusTextStyle()
+    statusRegion:highlight(text, timeout)
+    LibTools:setTargetTextStyle()
+end
+
+function LibTools:toast(toastText)
+    LibTools:status(toastText)
+end
+
+-- пишем в попап
+function LibTools:toast2(toastText)
+    LibTools:ifToast(toastText, toastOn)
+end
+
+
+function LibTools:ifToast(toastText, condition)
+    if condition == nil then
+        condition = toastOn
+    end
+    if condition then
+        toast(toastText)
+    end
+end
+
+-- пишем в заключительный диалог
 
 
 --################ НА ТЕСТ

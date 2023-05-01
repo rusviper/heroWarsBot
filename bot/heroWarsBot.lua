@@ -54,7 +54,7 @@ Settings:setScriptDimension(true, 2340)
 setImmersiveMode(true)
 
 -- стиль текста при подсветке
-setHighlightTextStyle(0xa5555555, 0xf8eeeeee, 8)
+LibTools:setTargetTextStyle()
 
 
 --toast("Прочитаем текст")
@@ -77,6 +77,8 @@ elseif (action == coordsAction) then
 elseif (action == adWaitAction) then
     Rooms:waitAdEnd(40)
 elseif (action == testAction) then
+
+  --Region(1100, 0, 800, 300):highlight()
 
   picStart = "tower/tower3Chest"
   picEnd = ".png"

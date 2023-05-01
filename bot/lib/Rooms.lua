@@ -123,7 +123,7 @@ function Rooms:towerCollect()
     Rooms:clickClose()
     -- выходим на площадь
     -- todo тут нажимается на неактивный видимый крестик, ограничить регион
-    Rooms:clickClose()
+    Rooms:clickClose(Region(1100, 0, 800, 300))	-- область активного видимого крестика
     Rooms:clickClose()
 end
 
@@ -301,10 +301,18 @@ end
 -------------------
 
 --- закрытие интерфейса в игре
-function Rooms:clickClose()
+function Rooms:clickClose(region)
+    if region == nil then
+        region = getGameArea()
+    end
     closeBtn = "town/close.png"
-    roomsToast("Жмем на крестик")
-    LibTools:clickIfVisible(closeBtn)
+    close = LibTools:findPicOnRegion(region, closeBtn)
+    if close ~= nil then
+	roomsToast("Жмем на крестик")
+    	click(close)
+    else
+    	roomsToast("Крестик не найден")
+    end
 end
 
 function goToHydras()
