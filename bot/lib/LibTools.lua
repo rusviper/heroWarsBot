@@ -1,3 +1,5 @@
+local Txt = require('Txt')
+
 local LibTools = {}
 
 similarity = 0.69
@@ -12,14 +14,14 @@ function LibTools:findPic(picName, timeout, notVisibleCallback, waitTimeout)
     if waitTimeout == nil then
         waitTimeout = 3 -- default exists timeout
     end
-    LibTools:toast("Ищем " .. tostring(picName))
+    Txt:toast("Ищем " .. tostring(picName))
     btn = exists(Pattern(picName):similar(similarity), waitTimeout)
 
     if btn ~= nil then
         showVisible(btn)
         return btn
     end
-    LibTools:toast("Не найдено " .. picName)
+    Txt:toast("Не найдено " .. picName)
     if (notVisibleCallback ~= nil) then
         notVisibleCallback(picName)
     end
@@ -36,14 +38,14 @@ function LibTools:findPicOnRegion(region, picName, timeout, notVisibleCallback, 
     if (region == nil) then
     	region = getGameArea()
     end
-    LibTools:toast("Ищем " .. tostring(picName))
+    Txt:toast("Ищем " .. tostring(picName))
     btn = region:exists(Pattern(picName):similar(similarity), waitTimeout)
 
     if btn ~= nil then
         showVisible(btn)
         return btn
     end
-    LibTools:toast("Не найдено " .. picName)
+    Txt:toast("Не найдено " .. picName)
     if (notVisibleCallback ~= nil) then
         notVisibleCallback(picName)
     end
@@ -84,7 +86,7 @@ function showVisible(match, timeout)
     if timeout == nil then
       timeout = 1
     end
-    --LibTools:toast("найдено " .. tostring(match))
+    --Txt:toast("найдено " .. tostring(match))
     text = "" .. match:getScore()
     match:highlight(text, timeout)
 end
@@ -157,7 +159,7 @@ function LibTools:findFirstOf(picTable)
         end
     end
     usePreviousSnap(false)
-    LibTools:toast("Не найдено ничего из " .. tableSize(picTable) .. " изображений")
+    Txt:toast("Не найдено ничего из " .. tableSize(picTable) .. " изображений")
     return nil
 end
 
@@ -198,49 +200,6 @@ end
 
 --################ PRINTING ################
 
--- стиль текста при подсветке
-
-function LibTools:setTargetTextStyle()
-	setHighlightTextStyle(0xa5555555, 0xf8eeeeee, 8)
-end
-
-function LibTools:setStatusTextStyle()
-	setHighlightTextStyle(0xcc222222, 0xfffcf560, 12)
-end
-
-
--- пишем в статус регион
---statusRegion = Region(1700, 950, 600, 150)	-- справа снизу
---statusRegion = Region(20, 1000, 2300, 100)	-- снизу узко
-statusRegion = Region(20, 0, 2300, 100)		-- сверху узко
-
-function LibTools:status(text, timeout)
-    if timeout == nil then
-        timeout = 3
-    end
-    LibTools:setStatusTextStyle()
-    statusRegion:highlight(text, timeout)
-    LibTools:setTargetTextStyle()
-end
-
-function LibTools:toast(toastText)
-    LibTools:status(toastText)
-end
-
--- пишем в попап
-function LibTools:toast2(toastText)
-    LibTools:ifToast(toastText, toastOn)
-end
-
-
-function LibTools:ifToast(toastText, condition)
-    if condition == nil then
-        condition = toastOn
-    end
-    if condition then
-        toast(toastText)
-    end
-end
 
 -- пишем в заключительный диалог
 
@@ -251,7 +210,7 @@ end
 -- ищем и показываем все совпадения по одной картинке
 function LibTools:showAll(pic)
     allMatches = findAllNoFindException(pic)
-    LibTools:toast("Всего видно " .. tableSize(allMatches) .. " штук")
+    Txt:toast("Всего видно " .. tableSize(allMatches) .. " штук")
     for i, m in pairs(allMatches) do
     	hiText = getMatchHiText(i, m)
         m:highlight()
@@ -275,7 +234,7 @@ end
 
 -- ищет N-ное изображение из найденных
 function LibTools:findByIndex(pic, index)
-    LibTools:toast("getFindFailedResponse()=" .. getFindFailedResponse())
+    Txt:toast("getFindFailedResponse()=" .. getFindFailedResponse())
     FindFailed.setFindFailedResponse("PROMPT")
     allMatches = findAllNoFindException(PS)
     -- сохраняем в лист для повторного использования

@@ -1,6 +1,7 @@
 package.path = scriptPath() .. 'lib/?.lua;' .. package.path
 local LibTools = require('LibTools')
 local Rooms = require('Rooms')
+local Txt = require('Txt')
 
 -- отладочный метод для определения координат нажатия
 function showTouchCoords()
@@ -54,7 +55,7 @@ Settings:setScriptDimension(true, 2340)
 setImmersiveMode(true)
 
 -- стиль текста при подсветке
-LibTools:setTargetTextStyle()
+Txt:setTargetTextStyle()
 
 
 --toast("Прочитаем текст")

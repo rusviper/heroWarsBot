@@ -1,4 +1,5 @@
 local LibTools = require('LibTools')
+local Txt = require('Txt')
 
 local Rooms = {}
 
@@ -11,7 +12,7 @@ adCloseLocation = Location(1940, 140)
 -------------------
 
 function roomsToast(toastText)
-    LibTools:ifToast(toastText, toastOn)
+    Txt:ifToast(toastText, toastOn)
 end
 
 -------------------
