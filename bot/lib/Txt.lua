@@ -18,7 +18,7 @@ statusRegion = Region(20, 0, 2300, 100)		-- сверху узко
 
 function Txt:status(text, timeout)
     if timeout == nil then
-        timeout = 3
+        timeout = 1
     end
     Txt:setStatusTextStyle()
     statusRegion:highlight(text, timeout)

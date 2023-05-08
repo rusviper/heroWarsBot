@@ -85,7 +85,7 @@ function Rooms:towerCollect()
 	  roomsToast("переходим к сундукам")
       LibTools:clickIfVisible("tower/tower1Start.png")
       LibTools:clickIfVisible("tower/tower2manual.png")
-      --wait(1)
+      wait(1)
       --click(towerManualLoc)
 	  foundChest = findChest()
     end
@@ -163,7 +163,7 @@ end
 
 -- собираем рекламу, пока видна кнопка
 function adCollectOneByStartPic(adButton)
-  adBtn = LibTools:exists(adButton)
+  adBtn = LibTools:exists(adButton, nil, nil, 6)    -- 6 сек
   while adBtn ~= nil do
     roomsToast("Собираем рекламку")
     click(adBtn)
@@ -270,17 +270,63 @@ end
 -----OUTLAND--------
 --------------------
 
+--Region(300, 0, 850, 1080) --левая половина
+
+bossesRegion = Region(1150, 0, 850, 1080)
+boss1Region = Region(300, 0, 550, 1080)
+boss2Region = Region(900, 0, 550, 1080)
+boss3Region = Region(1500, 0, 550, 1080)
+
 function Rooms:outlandCollect()
-    -- идём в запределье
-    LibTools:clickIfVisible("town/outland.png")
-    -- выбираем боссов
-    findByIndex("outland/outland1Enter.png", 1) -- правая кнопка
-    -- выбираем босса1
-    oneChestBoss("outland/outland2Boss1.png")
-    oneChestBoss("outland/outland3Boss2.png")
-    oneChestBoss("outland/outland4Boss3.png")
-    oneChestBoss("outland/outland4Boss3.png")
-    oneChestBoss("outland/outland4Boss3.png")
+
+    collectBoss(1)
+    collectBoss(2)
+    collectBoss(3)
+    collectBoss(3)
+    collectBoss(3)
+end
+
+function collectBoss(bossIndex)
+    bossRegion = boss3Region
+    if bossIndex == 1 then
+      bossRegion = boss1Region
+    elseif bossIndex == 2 then
+        bossRegion = boss2Region
+    elseif bossIndex == 3 then
+        bossRegion = boss3Region
+    else
+        roomsToast("Неправильный индекс босса " .. bossIndex)
+        return
+    end
+
+    selectBossPic = "outland/outland1SelectBoss.png"
+    selectBtn = LibTools:findPicOnRegion(bossRegion, selectBossPic)
+    if selectBtn == nil then
+        roomsToast("Не найдена кнопка, должны находиться на выборе босса")
+        return
+    end
+    click(selectBtn)
+
+    -- для каждого босса скорее всго будет разный скриншот
+    -- лучше сначала найти кнопку рейд? она более уникальна вроде как
+    -- иначе "дальше" находится на кнопке "в бой"
+    forwardPic = "outland/outland2GoForward.png"
+    forwardRegion = Region(1250, 500, 1000, 500)
+    forwardBtn =  LibTools:findPicOnRegion(forwardRegion, forwardPic)
+    if forwardBtn == nil then
+        roomsToast("Не найдена кнопка (дальше>), пропускаем")
+    else
+        click(forwardBtn)
+    end
+
+
+    LibTools:clickOnPicture("outland/outland3Raid.png")
+    LibTools:clickOnPicture("outland/outland4Free.png")
+
+    Rooms:clickClose()
+    Rooms:clickClose()
+    Rooms:clickClose()
+
 end
 
 function oneChestBoss(bossPic)

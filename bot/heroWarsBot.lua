@@ -28,18 +28,21 @@ end
 adAction = "Реклама"
 titanAction = "Титанит"
 towerAction = "Башня"
-testAction = "test"
-closeAction = "Закрыть"
-coordsAction = "Coords"
-adWaitAction = "Подождать и закрыть AD"
 hydraAction = "Гидра"
+testAction = "test"
+adWaitAction = "Подождать и закрыть AD"
+coordsAction = "Coords"
+closeAction = "Закрыть"
+outlandAction = "запределье-боссы"
+
 
 function actionMenu()
     spinnerSelectedValue = ""
     dialogInit()
-    spinnerItems = { adAction, titanAction, towerAction,
-        testAction, closeAction, coordsAction,
-        adWaitAction, hydraAction }
+    spinnerItems = { adAction,
+    	titanAction, towerAction, hydraAction,
+        testAction, adWaitAction, coordsAction,
+        closeAction, outlandAction}
     addTextView("Выберите действие: ")
     addSpinner("spinnerSelectedValue", spinnerItems, adAction)
     newRow()
@@ -69,6 +72,8 @@ elseif (action == towerAction) then
     Rooms:towerCollect()
 elseif (action == hydraAction) then
     Rooms:hydraCollect()
+elseif (action == outlandAction) then
+    Rooms:outlandCollect()
 elseif (action == adAction) then
     Rooms:adCollect()
 elseif (action == closeAction) then
@@ -79,11 +84,12 @@ elseif (action == adWaitAction) then
     Rooms:waitAdEnd(40)
 elseif (action == testAction) then
 
-  --Region(1100, 0, 800, 300):highlight()
+ -- getGameArea() =	2340, 1080
+  --Region(1500, 0, 550, 1080):highlight()
 
   picStart = "tower/tower3Chest"
   picEnd = ".png"
-  count = 4
+  count = 5
    table1 = {}
    table1[1] = picStart .. picEnd
    for i = 2,count do

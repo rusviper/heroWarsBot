@@ -149,7 +149,7 @@ end
 function LibTools:findFirstOf(picTable)
     snapshot()
     for i, m in pairs(picTable) do
-        found = LibTools:exists(m)
+        found = LibTools:exists(m, 0, nil, 0)
         if (found ~= nil) then
             hiText = getMatchHiText(m, found)
             found:highlight(hiText, 2)
@@ -198,15 +198,6 @@ function getMatchPrintText(pic, match)
 end
 
 
---################ PRINTING ################
-
-
--- пишем в заключительный диалог
-
-
---################ НА ТЕСТ
-
-
 -- ищем и показываем все совпадения по одной картинке
 function LibTools:showAll(pic)
     allMatches = findAllNoFindException(pic)
@@ -231,6 +222,8 @@ function iterateTable(table, action)
         action(i, m)
     end
 end
+
+--################ НА ТЕСТ
 
 -- ищет N-ное изображение из найденных
 function LibTools:findByIndex(pic, index)
@@ -267,16 +260,11 @@ end
 
 -- выполняет действие с использованием одного снимка
 function LibTools:doWithOneSnap(action, p1, p2)
-  usePreviousSnap(true)
+  snapshot()
   val = action(p1, p2)
   usePreviousSnap(false)
   return val
 end
-
-
-
-
-
 
 -- deprecated
 function LibTools:clickWithOffset(clickPic, offset)
@@ -289,20 +277,6 @@ function LibTools:ifPicClickOnPic(picCheck, picClick)
   if exists(picCheck) then
     LibTools:clickOnPicture(picClick)
   end
-end
-
--- deprecated
-function LibTools:waitForPicture(picWait, timeout)
-  if timeout == nil then
-    timeout = 1
-  end
-  wait(picWait, timeout)
-end
-
-
--- тестовый метод
-function LibTools:hello(name)
-  print("Hello, " .. name)
 end
 
 return LibTools
