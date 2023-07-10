@@ -2,6 +2,7 @@ package.path = scriptPath() .. 'lib/?.lua;' .. package.path
 local LibTools = require('LibTools')
 local Rooms = require('Rooms')
 local Txt = require('Txt')
+local MainTools = require('MainTools')
 
 -- отладочный метод для определения координат нажатия
 function showTouchCoords()
@@ -64,7 +65,6 @@ Txt:setTargetTextStyle()
 --toast("Прочитаем текст")
 --testReadText("town/townCheck.png")
 
-
 action = actionMenu()
 if (action == titanAction) then
     Rooms:titanCollect()
@@ -84,12 +84,14 @@ elseif (action == adWaitAction) then
     Rooms:waitAdEnd(40)
 elseif (action == testAction) then
 
- -- getGameArea() =	2340, 1080
+
+
+ -- print(getGameArea()) -- =	2340, 1080
   --Region(1500, 0, 550, 1080):highlight()
 
-  picStart = "tower/tower3Chest"
+  picStart = "hydra/hydra7Skip-"
   picEnd = ".png"
-  count = 5
+  count = 3
    table1 = {}
    table1[1] = picStart .. picEnd
    for i = 2,count do

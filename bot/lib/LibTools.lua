@@ -1,3 +1,4 @@
+local MainTools = require('MainTools')
 local Txt = require('Txt')
 
 local LibTools = {}
@@ -38,7 +39,10 @@ function LibTools:findPicOnRegion(region, picName, timeout, notVisibleCallback, 
     if (region == nil) then
     	region = getGameArea()
     end
-    Txt:toast("Ищем " .. tostring(picName))
+
+    -- для крестика регион статуса может закрывать
+    Txt:syncToast("Ищем " .. tostring(picName))
+
     btn = region:exists(Pattern(picName):similar(similarity), waitTimeout)
 
     if btn ~= nil then
@@ -159,18 +163,11 @@ function LibTools:findFirstOf(picTable)
         end
     end
     usePreviousSnap(false)
-    Txt:toast("Не найдено ничего из " .. tableSize(picTable) .. " изображений")
+    Txt:toast("Не найдено ничего из " .. MainTools:tableSize(picTable) .. " изображений")
     return nil
 end
 
-function tableSize(t)
-    size = 0
-    for a,b in pairs(t) do
-        --print("" .. a .. "-" .. tostring(b))
-        size = size + 1
-    end
-    return size
-end
+
 
 --==== MASS HIGHLIGHT
 

@@ -163,7 +163,7 @@ end
 
 -- собираем рекламу, пока видна кнопка
 function adCollectOneByStartPic(adButton)
-  adBtn = LibTools:exists(adButton, nil, nil, 6)    -- 6 сек
+  adBtn = LibTools:exists(adButton)
   while adBtn ~= nil do
     roomsToast("Собираем рекламку")
     click(adBtn)
@@ -173,7 +173,7 @@ function adCollectOneByStartPic(adButton)
         click(adCloseLocation)
     end
     -- ждём, пока одуплится следующая реклама
-    wait(7)
+    wait(9)
     adBtn = LibTools:exists(adButton)
   end
 end
@@ -321,6 +321,7 @@ function collectBoss(bossIndex)
 
 
     LibTools:clickOnPicture("outland/outland3Raid.png")
+    wait(2)
     LibTools:clickOnPicture("outland/outland4Free.png")
 
     Rooms:clickClose()
