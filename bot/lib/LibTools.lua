@@ -8,18 +8,23 @@ similarity = 0.69
 toastOn = true
 
 -- расширенный поиск через exists
-function LibTools:findPic(picName, timeout, notVisibleCallback, waitTimeout)
-    if timeout == nil then
-      timeout = 1
+-- waitTimeout - таймаут ожидания объекта
+-- showTimeout - таймаут подсветки найденного объекта
+-- notVisibleCallback обработчик действия "не найден"
+-- если найден - возвращается
+function LibTools:exists(picName, waitTimeout, notVisibleCallback, showTimeout)
+
+    if showTimeout == nil then
+      showTimeout = 0.5
     end
     if waitTimeout == nil then
-        waitTimeout = 3 -- default exists timeout
+        waitTimeout = 7 -- default exists timeout
     end
     Txt:toast("Ищем " .. tostring(picName))
     btn = exists(Pattern(picName):similar(similarity), waitTimeout)
 
     if btn ~= nil then
-        showVisible(btn)
+        showVisible(btn, showTimeout)
         return btn
     end
     Txt:toast("Не найдено " .. picName)
@@ -56,18 +61,12 @@ function LibTools:findPicOnRegion(region, picName, timeout, notVisibleCallback, 
     return nil
 end
 
-
-
-function LibTools:exists(picName, timeout, notVisibleCallback, waitTimeout)
-    return LibTools:findPic(picName, timeout, notVisibleCallback, waitTimeout)
-end
-
 -- кликает на картинку, перед этим подсвечивает на timeout
-function LibTools:clickOnPicture(picName, timeout, notVisibleCallback, waitTimeout)
+function LibTools:clickOnPicture(picName, waitTimeout, notVisibleCallback, showTimeout)
     if notVisibleCallback == nil then
       notVisibleCallback = printNotVisible
     end
-    found = LibTools:exists(picName, timeout, notVisibleCallback, waitTimeout)
+    found = LibTools:exists(picName, waitTimeout, notVisibleCallback, showTimeout)
     if found ~= nil then
         click(found)
         return found
@@ -118,7 +117,7 @@ end
 -- ищет изображение в рамках другого изображения
 function LibTools:findPicOnPic(field, object)
     -- подсветим поле
-    fieldMatch = LibTools:findPic(field, 0.5, printNotVisible)
+    fieldMatch = LibTools:exists(field, nil, printNotVisible)
     if (fieldMatch == nil) then
         return nil
     end
@@ -153,10 +152,9 @@ end
 function LibTools:findFirstOf(picTable)
     snapshot()
     for i, m in pairs(picTable) do
-        found = LibTools:exists(m, 0, nil, 0)
+        found = LibTools:exists(m, 1, nil, 2)
         if (found ~= nil) then
             hiText = getMatchHiText(m, found)
-            found:highlight(hiText, 2)
             print(getMatchPrintText(m, found))
             usePreviousSnap(false)
             return found
