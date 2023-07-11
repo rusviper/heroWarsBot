@@ -1,5 +1,6 @@
 local LibTools = require('LibTools')
 local Txt = require('Txt')
+local Navigation = require('Navigation')
 
 local Ad = {}
 
@@ -51,7 +52,7 @@ function adCollectOneByStartPic(adButton)
   end
 end
 closeAdPic = "ad/ad5Close.png"
-function Rooms:closeAd()
+function Navigation:closeAd()
     return LibTools:clickOnPicture(closeAdPic)
 end
 

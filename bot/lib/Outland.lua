@@ -1,5 +1,6 @@
 local LibTools = require('LibTools')
 local Txt = require('Txt')
+local Navigation = require('Navigation')
 
 local Outland = {}
 
