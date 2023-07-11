@@ -38,7 +38,7 @@ function isTitanDoorVisible()
 end
 
 function isStageCompleted()
-    return exists("titan/titanDigDeep2.png")
+    return exists("titan/titanDigDeep.png")
 end
 
 function titanCompleteOneDoor()
