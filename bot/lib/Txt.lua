@@ -4,11 +4,11 @@ local Txt = {}
 
 -- стиль текста при подсветке
 colorLightGray = 0xa5555555
-colorDark = 0xa5555555
+colorDark = 0xcc222222
 colorLightWhite = 0xf8eeeeee
 colorYellow = 0xfffcf560
 function Txt:setTargetTextStyle()
-	setHighlightTextStyle(lightGray, colorLightWhite, 8)
+	setHighlightTextStyle(colorLightGray, colorLightWhite, 8)
 end
 
 function Txt:setStatusTextStyle()
