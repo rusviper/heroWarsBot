@@ -65,6 +65,8 @@ smallChest = "tower/tower3Chest.png"
 lastChest = "tower/tower6LastChest.png"
 
 function findChest()
+   -- ждём возможную загрузку башни или её перемещение
+   wait(2)
    roomsToast("Есть че по сундукам?")
    chest = LibTools:findFirstOfList(firstChest, smallChest, lastChest)
    if (chest ~= nil) then
@@ -85,8 +87,8 @@ function Rooms:towerCollect()
 	  roomsToast("переходим к сундукам")
       LibTools:clickIfVisible("tower/tower1Start.png")
       LibTools:clickIfVisible("tower/tower2manual.png")
-      wait(1)
-      --click(towerManualLoc)
+      -- ждём возможную загрузку башни (лучше бы сделать через поиск картинки, но корутины не работают =( )
+      wait(3)
 	  foundChest = findChest()
     end
 
@@ -99,7 +101,7 @@ function Rooms:towerCollect()
     -- чемоданы отличаются по этажам
     -- искать чемодан только один раз
     for stage=1,20 do
-    	if not foundChest then
+    	if foundChest == nil then
     		roomsToast("Сундук не найден, выходим")
     		break
 	end
@@ -223,6 +225,7 @@ function Rooms:hydraCollectFull()
     Rooms:clickClose()
 end
 
+-- пока что основная функция сбора гидры
 function Rooms:hydraCollect()
     oneHydraThreeHeads()
 end

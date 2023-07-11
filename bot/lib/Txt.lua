@@ -3,13 +3,16 @@ local MainTools = require('MainTools')
 local Txt = {}
 
 -- стиль текста при подсветке
-
+colorLightGray = 0xa5555555
+colorDark = 0xa5555555
+colorLightWhite = 0xf8eeeeee
+colorYellow = 0xfffcf560
 function Txt:setTargetTextStyle()
-	setHighlightTextStyle(0xa5555555, 0xf8eeeeee, 8)
+	setHighlightTextStyle(lightGray, colorLightWhite, 8)
 end
 
 function Txt:setStatusTextStyle()
-	setHighlightTextStyle(0xcc222222, 0xfffcf560, 12)
+	setHighlightTextStyle(colorDark, colorLightWhite, 10)
 end
 
 
@@ -17,7 +20,7 @@ end
 --statusRegion = Region(1700, 950, 600, 150)	-- справа снизу
 statusRegionDown = Region(20, 1000, 2300, 100)	-- снизу узко
 --statusRegion = Region(20, 0, 2300, 100)		-- сверху узко
-statusRegion = Region(20, 0, 2000, 100)		-- сверху часть
+statusRegion = Region(20, 0, 2000, 90)		-- сверху часть
 
 function Txt:status(text, timeout)
     if timeout == nil then
