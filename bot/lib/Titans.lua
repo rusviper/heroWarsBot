@@ -36,7 +36,7 @@ end
 function titanCompleteOneDoor()
   -- жмём на дверь "в бой"
   foundDoor = LibTools:clickOnPicture("titan/titanDoor.png")
-  if (foundDoor == nil)
+  if (foundDoor == nil) then
     roomsToast("Дверь не найдена")
     return
   end
