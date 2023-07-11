@@ -49,6 +49,7 @@ function DevTools:testAction()
 
    -- тут findAllByColumn
    -- LibTools:findByIndex2(pic, index)
-
-
 end
+
+
+return DevTools
