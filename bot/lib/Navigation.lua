@@ -36,6 +36,7 @@ function Navigation:goToUnderground()
     roomsToast("Идем в подземелье")
     if Navigation:isOnTown() then
         Navigation:goToGuild()
+        wait(2) -- ждем прогрузки гильдии, долгая
     end
     if Navigation:isOnGuild() then
         LibTools:clickOnPicture("town/toTitans.png")

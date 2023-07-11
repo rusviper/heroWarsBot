@@ -42,7 +42,7 @@ function adCollectOneByStartPic(adButton)
     roomsToast("Собираем рекламку")
     click(adBtn)
     -- ждём окончания рекламы до 40 сек
-    if not Da:waitAdEnd(40) then
+    if not Ad:waitAdEnd(40) then
         roomsToast("Не смогли закрыть рекламу")
         click(adCloseLocation)
     end
