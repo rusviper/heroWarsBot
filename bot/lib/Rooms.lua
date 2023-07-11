@@ -257,8 +257,7 @@ end
 
 function hydraTakeHead()
     -- атака уже началась (нажали "" или "следующий бой")
-    wait(5) -- ждем загрузки боя
-    LibTools:clickOnPicture("hydra/hydra6Pause.png")
+    LibTools:clickOnPicture("hydra/hydra6Pause.png", 15)    -- ждём подольше, т.к. бой долго прогружается иногда
     LibTools:clickOnPicture("hydra/hydra7Skip.png")
 end
 
