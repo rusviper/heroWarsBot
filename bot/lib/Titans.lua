@@ -34,9 +34,14 @@ function isStageCompleted()
 end
 
 function titanCompleteOneDoor()
-  roomsToast("Соберём и эту дверь")
   -- жмём на дверь "в бой"
-  LibTools:clickOnPicture("titan/titanDoor.png")
+  foundDoor = LibTools:clickOnPicture("titan/titanDoor.png")
+  if (foundDoor == nil)
+    roomsToast("Дверь не найдена")
+    return
+  end
+
+  roomsToast("Соберём и эту дверь")
   -- жмём на кнопку "напасть"
   LibTools:clickOnPicture("titan/titanAttack.png")
   -- жмём на кнопку "автобой"
