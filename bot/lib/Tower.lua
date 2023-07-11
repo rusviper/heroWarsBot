@@ -33,7 +33,7 @@ end
 function Tower:towerCollect()
     foundChest = findChest()
     if foundChest == nil then
-	  goToTower()
+	  Navigation:goToTower()
 	  foundChest = findChest()
     end
     if foundChest == nil then
