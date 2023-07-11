@@ -51,8 +51,9 @@ function adCollectOneByStartPic(adButton)
     adBtn = LibTools:exists(adButton)
   end
 end
+
 closeAdPic = "ad/ad5Close.png"
-function Navigation:closeAd()
+function Ad:closeAd()
     return LibTools:clickOnPicture(closeAdPic)
 end
 
