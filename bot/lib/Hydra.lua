@@ -9,34 +9,36 @@ local Hydra = {}
 -----HYDRA---------
 -------------------
 
--- пока в разработке
-function Hydra:hydraCollectFull()
-    -- перемещаемся к гидрам
-    Navigation:goToHydras()
-    -- идём к последним гидрам
-    LibTools:clickIfVisible("hydra/hydra1Next.png")
-    -- идём к кошмарной
-    LibTools:clickIfVisible("hydra/hydra2h4.png")
-    -- todo определять доступные головы
-    hydraHead = "hydra/hydra3water.png"
-    for i=1,3 do
-        roomsToast("Атакуем гидру (" .. i .."/3)")
-        if exists(hydraHead) then
-            LibTools:clickOnPicture(hydraHead)
-
-            -- забираем одну гидру
-            oneHydraThreeHeads()
-        else
-            roomsToast("Голова гидры не найдена")
-        end
-    end
-    -- выходим из гидры
-    Navigation:clickClose()
+-- ждем тык, а затем три раза собираем по нему гидру
+function Hydra:treeHydraFromPoint()
+  local hydraStart = Hydra:getHydraStartPoint()
+  
+   for i = 1,3 do
+       roomsToast("Атакуем гидру (" .. i .."/3)")
+       Hydra:tapWithShow(hydraStart)
+       oneHydraThreeHeads()
+   end
 end
+
+function Hydra:getHydraStartPoint()
+  local action, locTable, touchTable = getTouchEvent()
+  print("Координаты гидры:")
+  print(locTable)
+  
+ -- roomsToast("Координаты гидры: " .. locTable)
+  return locTable
+end
+
+-- ждем тык, а затем три раза собираем по нему гидру
+function Hydra:tapWithShow(locTable)
+  LibTools:highlightPoint(locTable)
+  click(locTable)
+end
+
 
 -- пока что основная функция сбора гидры
 function Hydra:hydraCollect()
-    oneHydraThreeHeads()
+    Hydra:treeHydraFromPoint()
 end
 
 function oneHydraThreeHeads()
@@ -48,12 +50,13 @@ function oneHydraThreeHeads()
     hydraTakeHead()
     -- дожидаемся завершения боя и нажимаем "следующий бой"
     hydraNextHead()
+    
     -- пропускаем второй бой
-    hydraTakeHead()
-    hydraNextHead()
-    hydraTakeHead()
+    --hydraTakeHead()
+    --hydraNextHead()
+    --hydraTakeHead()
     -- после третьего боя уже кнопка "ОК" и выход к головам
-    hydraEndHeads()
+    --hydraEndHeads()
     -- после этого оказываемся на головах
 end
 
@@ -61,7 +64,8 @@ end
 function select3Teams()
     LibTools:clickOnPicture("hydra/hydra4NextTeam.png")
     LibTools:clickOnPicture("hydra/hydra4NextTeam.png")
-    LibTools:clickOnPicture("hydra/hydra5Fight.png")
+    --LibTools:clickOnPicture("hydra/hydra5Fight.png")
+    LibTools:clickOnPicture("hydra/hydra4NextTeam.png")
 end
 
 -- нажимаем "пауза", "пропустить"

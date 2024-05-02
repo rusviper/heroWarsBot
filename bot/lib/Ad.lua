@@ -53,18 +53,29 @@ function adCollectOneByStartPic(adButton)
 end
 
 closeAdPic = "ad/ad5Close.png"
+cancelAdDownload =  "ad/ad7Cancel.png"
 function Ad:closeAd()
     return LibTools:clickOnPicture(closeAdPic)
 end
 
 -- найти крестик, подождать 3 сек и ткнуть в то место
 function Ad:waitAdEnd(timeout)
-    rval = LibTools:clickOnPicture(closeAdPic, 1, nil, timeout)
+-- некоторые рекламы сразу показывают крестик, но если закрыть ее, то 
+-- результат отрицательный. Ждем окончания, и только потом жмем закрытие. 
+-- самая долгая реклама 26 сек
+    wait(26)
+    
+    rval = LibTools:clickOnPicture(closeAdPic, timeout, nil, 1)
     if rval == nil then return false end
     -- после первого нажатия снова появляется ещё один крестик
     -- пробуем подождать его, но ничего, если не получится
     wait(2)
-    LibTools:clickIfVisible(closeAdPic, 1, nil, 3)
+    -- после первого нажатия иногда всплывает окно с кнопками
+    -- если оно есть, нажимаем его, но его может не быть
+    rval = LibTools:clickIfVisible(cancelAdDownload, 0, nil, 1)
+    -- после первого крестика снова появляется ещё один крестик
+    -- пробуем подождать его, но ничего, если не получится
+    LibTools:clickIfVisible(closeAdPic, 3, nil, 1)
     return true
 end
 

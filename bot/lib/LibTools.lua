@@ -221,7 +221,7 @@ end
 -- ищем и показываем все совпадения по одной картинке
 function LibTools:showAll(pic)
     allMatches = findAllNoFindException(pic)
-    Txt:toast("Всего видно " .. tableSize(allMatches) .. " штук")
+    Txt:toast("Всего видно " .. MainTools:tableSize(allMatches) .. " штук")
     for i, m in pairs(allMatches) do
     	hiText = getMatchHiText(i, m)
         m:highlight()

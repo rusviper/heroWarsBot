@@ -50,6 +50,38 @@ function titanCompleteOneDoor()
   LibTools:clickOnPicture("titan/titanOK.png")
 end
 
+-- бои во время событий
+function Titans:eventFights()
+  -- цикл по боям 
+  local count = 20
+  for i=1,count do
+    roomsToast("Цикл " .. i .. " из " .. count)
+    eventFight()
+   end
+  
+end
+
+
+function eventFight()
+  -- жмём в атаку
+  attackPic="event/event1attack.png"
+  --LibTools:clickOnPicture(attackPic)
+  --LibTools:clickOnPicture("titan/titanAttack.png")
+  
+  btnAttack = Region(1860, 915, 6, 6)
+  click(btnAttack)
+  -- выбираем титанов и в бой
+  --LibTools:clickOnPicture("titan/titanOk.png")
+  LibTools:clickOnPicture("hydra/hydra4NextTeam3.png")
+  -- ждем паузу
+  LibTools:clickOnPicture("hydra/hydra6Pause.png", 15)    -- ждём подольше, т.к. бой долго прогружается иногда
+  -- пропустить
+  LibTools:clickOnPicture("hydra/hydra7Skip.png")
+  -- ок
+  LibTools:clickOnPicture("event/event2End.png")
+  
+  wait(1)
+end
 
 
 
