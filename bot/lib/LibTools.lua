@@ -152,7 +152,7 @@ end
 function LibTools:findFirstOf(picTable)
     snapshot()
     for i, m in pairs(picTable) do
-        found = LibTools:exists(m, 1, nil, 2)
+        found = LibTools:exists(m, 0, nil, 0)
         if (found ~= nil) then
             hiText = getMatchHiText(m, found)
             print(getMatchPrintText(m, found))
@@ -163,6 +163,31 @@ function LibTools:findFirstOf(picTable)
     usePreviousSnap(false)
     Txt:toast("Не найдено ничего из " .. MainTools:tableSize(picTable) .. " изображений")
     return nil
+end
+
+function LibTools:waitOneOfList(pic1, pic2, pic3, pic4, pic5)
+    return LibTools:waitOneOf(listToTable(pic1, pic2, pic3, pic4, pic5))
+end
+
+--
+function LibTools:waitOneOf(picTable, timeout, step)
+    if (timeout == nil) then
+        timeout = 3
+    end
+    if (step == nil) then
+            step = 0.5
+    end
+
+    local found = nil
+    for i = 0, timeout, step do
+        found = LibTools:findFirstOf(picTable)
+        if (found ~= nil) then
+            Txt:toast("Найдено! " .. found .. " изображение за " .. (i * step) .. " сек.")
+            return found
+        end
+    end
+    Txt:toast("Не найдено ничего из " .. MainTools:tableSize(picTable) .. " изображений за " .. timeout .. " секунд")
+    return found
 end
 
 

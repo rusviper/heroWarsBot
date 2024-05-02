@@ -21,7 +21,7 @@ function findChest()
    -- ждём возможную загрузку башни или её перемещение
    wait(2)
    roomsToast("Есть че по сундукам?")
-   chest = LibTools:findFirstOfList(firstChest, smallChest, lastChest)
+   chest = LibTools:waitOneOf(listToTable(firstChest, smallChest, lastChest), 5)
    if (chest ~= nil) then
    	roomsToast("Сундук найден! " .. tostring(chest:getTarget()))
    else
@@ -37,7 +37,7 @@ function Tower:towerCollect()
 	  foundChest = findChest()
     end
     if foundChest == nil then
-	  roomsToast("переходим к сундукам")
+	  roomsToast("Запускаем башню, первые шаги")
       LibTools:clickIfVisible("tower/tower1Start.png")
       LibTools:clickIfVisible("tower/tower2manual.png")
       -- ждём возможную загрузку башни (лучше бы сделать через поиск картинки, но корутины не работают =( )
