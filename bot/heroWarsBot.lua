@@ -10,6 +10,7 @@ local Navigation = require('Navigation')
 local Outland = require('Outland')
 local Titans = require('Titans')
 local Tower = require('Tower')
+local Port = require('Port')
 
 local Rooms = require('Rooms')
 
@@ -24,15 +25,16 @@ adWaitAction = "Подождать и закрыть AD"
 coordsAction = "Coords"
 closeAction = "Закрыть"
 outlandAction = "запределье-боссы"
-
+eventAction = "Событие"
+portAction = "Порт"
 
 function actionMenu()
     spinnerSelectedValue = ""
     dialogInit()
-    spinnerItems = { adAction,
-    	titanAction, towerAction, hydraAction,
-        testAction, adWaitAction, coordsAction,
-        closeAction, outlandAction}
+    spinnerItems = { 
+    	titanAction, towerAction, hydraAction, outlandAction, 
+        testAction, adAction, adWaitAction, coordsAction,
+        closeAction, eventAction, portAction}
     addTextView("Выберите действие: ")
     addSpinner("spinnerSelectedValue", spinnerItems, adAction)
     newRow()
@@ -48,7 +50,7 @@ Settings:setScriptDimension(true, 2340)
 setImmersiveMode(true)
 
 -- стиль текста при подсветке
-Txt:setTargetTextStyle()
+--Txt:setTargetTextStyle()
 
 
 --toast("Прочитаем текст")
@@ -73,4 +75,8 @@ elseif (action == adWaitAction) then
     Ad:waitAdEnd(40)
 elseif (action == testAction) then
     DevTools:testAction()
+elseif (action == eventAction) then
+    Titans:eventFights()
+elseif (action == portAction) then
+    Port:collect()
 end

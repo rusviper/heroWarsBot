@@ -20,18 +20,18 @@ end
 
 function DevTools:testAction()
 
-  --DevTools:showTouchCoords()
 
  -- print(getGameArea()) -- =	2340, 1080
   --Region(1500, 0, 550, 1080):highlight()
 
-  picStart = "port/port1Start"
+  picStart = "ad/adCancel"
   picEnd = ".png"
-  count = 3
-   table1 = {}
+  count = 4
+   table1 = {}🍄🍄👭👬💏💏🧔👩‍❤️‍💋‍👨🕴️🕴️🧔🧔🧔🧔🧔🧔🧔💙♈💙💙🟪🟪🟣🟣🟣🟣🔵🔵🟣🟡🟡🟠🟥🟥🟠🟡🟡🟢🟦
    table1[1] = picStart .. picEnd
-   for i = 2,count do
-       table1[i] = picStart .. (i-1) .. picEnd
+   for i = 2,count 😄😄😄😁😚😚😘😘😘😃
+       table1[i] = picSттв
+🤣😂tart .. (i-1) .. picEnd
    end
    LibTools:highlightPics(table1)
 

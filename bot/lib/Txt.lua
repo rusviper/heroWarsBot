@@ -3,8 +3,8 @@ local MainTools = require('MainTools')
 local Txt = {}
 
 -- стиль текста при подсветке
-colorLightGray = 0xa5555555
-colorDark = 0xcc222222
+local colorLightGray = 0xa5555555
+colorDark = 0xa5555555
 colorLightWhite = 0xf8eeeeee
 colorYellow = 0xfffcf560
 function Txt:setTargetTextStyle()
@@ -140,6 +140,9 @@ function getLogString(text)
 end
 
 ----------------------
+
+
+
 
 
 return Txt
