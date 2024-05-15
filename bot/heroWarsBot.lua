@@ -27,14 +27,16 @@ closeAction = "Закрыть"
 outlandAction = "запределье-боссы"
 eventAction = "Событие"
 portAction = "Порт"
+aboutAction = "О программе"
+testMenuAction = "Тестовые инструменты"
 
 function actionMenu()
     spinnerSelectedValue = ""
     dialogInit()
     spinnerItems = { 
     	titanAction, towerAction, hydraAction, outlandAction, 
-        testAction, adAction, adWaitAction, coordsAction,
-        closeAction, eventAction, portAction}
+        adAction, adWaitAction,
+        eventAction, portAction, testMenuAction, aboutAction}
     addTextView("Выберите действие: ")
     addSpinner("spinnerSelectedValue", spinnerItems, adAction)
     newRow()
@@ -42,12 +44,70 @@ function actionMenu()
     return spinnerSelectedValue
 end
 
+function selectFirstAction()
+    action = actionMenu()
+    if (action == titanAction) then
+        Titans:titanCollect()
+    elseif (action == towerAction) then
+        Tower:towerCollect()
+    elseif (action == hydraAction) then
+        Hydra:hydraCollect()
+    elseif (action == outlandAction) then
+        Outland:outlandCollect()
+    elseif (action == adAction) then
+        Ad:adCollect()
+    elseif (action == adWaitAction) then
+        Ad:waitAdEnd(40)
+    elseif (action == eventAction) then
+        Titans:eventFights()
+    elseif (action == portAction) then
+        Port:collect()
+    elseif (action == aboutAction) then
+        showAboutDialog()
+    elseif (action == testMenuAction) then
+        selectTestAction()
+    end
+end
+
+function testMenu()
+    spinnerSelectedValue = ""
+    dialogInit()
+    spinnerItems = {
+        testAction, coordsAction, closeAction }
+    addTextView("Выберите тестовое действие: ")
+    addSpinner("spinnerSelectedValue", spinnerItems, testAction)
+    newRow()
+    dialogShow()
+    return spinnerSelectedValue
+end
+
+function selectTestAction()
+    action = testMenu()
+    if (action == testAction) then
+        DevTools:testAction()
+    elseif (action == closeAction) then
+        Navigation:clickClose()
+    elseif (action == coordsAction) then
+        DevTools:showTouchCoords()
+    end
+end
+
+function showAboutDialog()
+    aboutText = "Written by rusviper. \nSee: https://github.com/rusviper/heroWarsBot \nmailTo:rusviper@gmail.com"
+    dialogInit()
+    addTextView(aboutText)
+    newRow()
+    dialogShow()
+end
 
 -- разработка с таким расширением
 Settings:setScriptDimension(true, 2340)
 
 -- экран со скрывающимися кнопками
 setImmersiveMode(true)
+
+-- положение кнопки запуска скрипта
+setButtonPosition(0, 0)
 
 -- стиль текста при подсветке
 --Txt:setTargetTextStyle()
@@ -56,27 +116,4 @@ setImmersiveMode(true)
 --toast("Прочитаем текст")
 --testReadText("town/townCheck.png")
 
-action = actionMenu()
-if (action == titanAction) then
-    Titans:titanCollect()
-elseif (action == towerAction) then
-    Tower:towerCollect()
-elseif (action == hydraAction) then
-    Hydra:hydraCollect()
-elseif (action == outlandAction) then
-    Outland:outlandCollect()
-elseif (action == adAction) then
-    Ad:adCollect()
-elseif (action == closeAction) then
-    Navigation:clickClose()
-elseif (action == coordsAction) then
-    DevTools:showTouchCoords()
-elseif (action == adWaitAction) then
-    Ad:waitAdEnd(40)
-elseif (action == testAction) then
-    DevTools:testAction()
-elseif (action == eventAction) then
-    Titans:eventFights()
-elseif (action == portAction) then
-    Port:collect()
-end
+selectFirstAction()
