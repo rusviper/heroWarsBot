@@ -93,7 +93,7 @@ function selectTestAction()
 end
 
 function showAboutDialog()
-    aboutText = "Written by rusviper. \nSee: https://github.com/rusviper/heroWarsBot \nmailTo:rusviper@gmail.com"
+    aboutText = "Written by rusviper. \nSee: https://github.com/rusviper/heroWarsBot \n t: https://t.me/rusviperHW \n"
     dialogInit()
     addTextView(aboutText)
     newRow()

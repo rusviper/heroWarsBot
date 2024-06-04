@@ -1,6 +1,7 @@
 Автоматизация HeroWars
 ----------------------
 Бот для игры под android [Hero Wars: Alliance](https://play.google.com/store/apps/details?id=com.nexters.herowars&pcampaignid=web_share).
+Поддержка, обратная связь: https://t.me/rusviperHW
 
 Быстрый старт
 -------------
