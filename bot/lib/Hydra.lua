@@ -11,29 +11,15 @@ local Hydra = {}
 
 -- ждем тык, а затем три раза собираем по нему гидру
 function Hydra:treeHydraFromPoint()
-  local hydraStart = Hydra:getHydraStartPoint()
+  local hydraStart = LibTools:getTapStartPoint()
   
    for i = 1,3 do
        roomsToast("Атакуем гидру (" .. i .."/3)")
-       Hydra:tapWithShow(hydraStart)
+       LibTools:tapWithShow(hydraStart)
        oneHydraThreeHeads()
    end
 end
 
-function Hydra:getHydraStartPoint()
-  local action, locTable, touchTable = getTouchEvent()
-  print("Координаты гидры:")
-  print(locTable)
-  
- -- roomsToast("Координаты гидры: " .. locTable)
-  return locTable
-end
-
--- ждем тык, а затем три раза собираем по нему гидру
-function Hydra:tapWithShow(locTable)
-  LibTools:highlightPoint(locTable)
-  click(locTable)
-end
 
 
 -- пока что основная функция сбора гидры

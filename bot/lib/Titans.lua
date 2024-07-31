@@ -16,6 +16,7 @@ function Titans:titanCollect()
     roomsToast("Идём в подземелье")
     Navigation:goToUnderground()
   end
+  wait(2)
 -- проходим по дверям, пока не достигнем кнопки погружения
   while not isStageCompleted() do
     titanCompleteOneDoor()
@@ -34,6 +35,8 @@ function isStageCompleted()
 end
 
 function titanCompleteOneDoor()
+  -- ждём, пока титаны дошагают
+  wait(2)
   -- жмём на дверь "в бой"
   foundDoor = LibTools:clickOnPicture("titan/titanDoor.png")
   if (foundDoor == nil) then

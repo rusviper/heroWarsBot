@@ -52,5 +52,16 @@ function DevTools:testAction()
    -- LibTools:findByIndex2(pic, index)
 end
 
+function DevTools:repeatTap20()
+    roomsToast("Укажите, куда нажать 20 раз")
+    local hydraStart = LibTools:getTapStartPoint()
+    for i = 1,count do
+        LibTools:tapWithShow(hydraStart)
+    end
+end
+
+function roomsToast(toastText)
+    Txt:ifToast(toastText, true)
+end
 
 return DevTools

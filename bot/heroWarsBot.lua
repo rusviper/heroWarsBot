@@ -24,11 +24,12 @@ testAction = "test"
 adWaitAction = "Подождать и закрыть AD"
 coordsAction = "Coords"
 closeAction = "Закрыть"
-outlandAction = "запределье-боссы"
+outlandAction = "Боссы запределья"
 eventAction = "Событие"
 portAction = "Порт"
 aboutAction = "О программе"
 testMenuAction = "Тестовые инструменты"
+repeatTap20 = "Повторные нажатия (20)"
 
 function actionMenu()
     spinnerSelectedValue = ""
@@ -73,7 +74,7 @@ function testMenu()
     spinnerSelectedValue = ""
     dialogInit()
     spinnerItems = {
-        testAction, coordsAction, closeAction }
+        testAction, coordsAction, closeAction, repeatTap20 }
     addTextView("Выберите тестовое действие: ")
     addSpinner("spinnerSelectedValue", spinnerItems, testAction)
     newRow()
@@ -89,6 +90,8 @@ function selectTestAction()
         Navigation:clickClose()
     elseif (action == coordsAction) then
         DevTools:showTouchCoords()
+    elseif (action == repeatTap20) then
+        DevTools:repeatTap20()
     end
 end
 

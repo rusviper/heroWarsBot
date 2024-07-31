@@ -30,18 +30,17 @@ function findChest()
    return chest
 end
 
+-- корневой метод меню ---
 function Tower:towerCollect()
     foundChest = findChest()
     if foundChest == nil then
-	  Navigation:goToTower()
-	  foundChest = findChest()
+        -- находимся в центре? идём в башню
+    	Navigation:goToTower()
+    	foundChest = findChest()
     end
     if foundChest == nil then
-	  roomsToast("Запускаем башню, первые шаги")
-      LibTools:clickIfVisible("tower/tower1Start.png")
-      LibTools:clickIfVisible("tower/tower2manual.png")
-      -- ждём возможную загрузку башни (лучше бы сделать через поиск картинки, но корутины не работают =( )
-      wait(3)
+      -- пропускаем начальную валькирию, если она показывается
+	  skipTowerStartValkyrieIfVisible()
 	  foundChest = findChest()
     end
 
@@ -50,14 +49,14 @@ function Tower:towerCollect()
     	return
     end
 
-    -- итерируем по чемоданам
+    -- итерируем по чемоданам до 20 раз
     -- чемоданы отличаются по этажам
     -- искать чемодан только один раз
     for stage=1,20 do
     	if foundChest == nil then
     		roomsToast("Сундук не найден, выходим")
     		break
-	end
+	    end
     	roomsToast("Собираем этаж " .. stage)
 
     	click(foundChest)
@@ -72,15 +71,32 @@ function Tower:towerCollect()
         	click(nextBtn)
         end
 
-    	wait(2)
+    	wait(3)
     	foundChest = findChest()
     end
 
     Navigation:clickClose()
-    -- выходим на площадь
-    -- todo тут нажимается на неактивный видимый крестик, ограничить регион
+
+    -- закрываем заключительное окно
     Navigation:clickClose(Region(1100, 0, 800, 300))	-- область активного видимого крестика
+    -- выходим на площадь
     Navigation:clickClose()
+end
+
+-- возвращает not nil если успешно пройдено
+function skipTowerStartValkyrieIfVisible()
+    towerStartFound = LibTools:exists("tower/tower1Start.png", 1)
+    if towerStartFound == nil then
+        return nil
+    end
+
+    roomsToast("Запускаем башню, первые шаги")
+    LibTools:clickIfVisible("tower/tower1Start.png")
+    LibTools:clickIfVisible("tower/tower2manual.png")
+    -- ждём возможную загрузку башни (лучше бы сделать через поиск картинки, но корутины не работают =( )
+    wait(3)
+
+    return towerStartFound
 end
 
 function findTowerNext()

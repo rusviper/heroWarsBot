@@ -3,6 +3,27 @@ local Txt = require('Txt')
 
 local LibTools = {}
 
+-- #### Базовые инструменты #### --
+-- LibTools:exists
+-- LibTools:findPicOnRegion
+-- LibTools:clickOnPicture
+-- LibTools:clickIfVisible
+-- LibTools:highlightPoint
+-- LibTools:clickPicOnPic
+-- LibTools:findPicOnPic
+---
+-- LibTools:findFirstOfList
+-- LibTools:findFirstOf
+-- LibTools:waitOneOfList
+-- LibTools:waitOneOf
+---
+-- LibTools:highlightPics
+-- LibTools:showAll
+---
+-- LibTools:getTapStartPoint
+-- LibTools:tapWithShow(locTable)
+
+
 similarity = 0.69
 --similarity = 0.5
 toastOn = true
@@ -285,6 +306,30 @@ function LibTools:doWithOneSnap(action, p1, p2)
   usePreviousSnap(false)
   return val
 end
+
+
+--=================
+-- получает локацию нажатия
+function LibTools:getTapStartPoint()
+  local action, locTable, touchTable = getTouchEvent()
+  print("Координаты нажатия:")
+  print(locTable)
+
+ -- roomsToast("Координаты гидры: " .. locTable)
+  return locTable
+end
+
+-- подсвечивает и нажимает в определённую точку
+function LibTools:tapWithShow(locTable)
+  LibTools:highlightPoint(locTable)
+  click(locTable)
+end
+
+--=================
+
+
+
+
 
 -- deprecated
 function LibTools:clickWithOffset(clickPic, offset)
