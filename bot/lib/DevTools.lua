@@ -8,12 +8,13 @@ local DevTools = {}
 -- отладочный метод для определения координат нажатия
 function DevTools:showTouchCoords()
   print("Координаты экрана и тыка")
-  print(getRealScreenSize())
+  print("Screen size:" .. getRealScreenSize())
+
   local action, locTable, touchTable = getTouchEvent()
 
-  print(locTable)
-  print(action)
-  print(touchTable)
+  print("Action:" .. action)
+  print("Location table:" .. locTable)
+  print("Touch table:" .. touchTable)
 
   LibTools:highlightPoint(locTable)
 end
