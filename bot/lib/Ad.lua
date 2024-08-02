@@ -63,7 +63,7 @@ function Ad:waitAdEnd(timeout)
 -- некоторые рекламы сразу показывают крестик, но если закрыть ее, то 
 -- результат отрицательный. Ждем окончания, и только потом жмем закрытие. 
 -- самая долгая реклама 26 сек
-    wait(26)
+    wait(30)
     
     rval = LibTools:clickOnPicture(closeAdPic, timeout, nil, 1)
     if rval == nil then return false end
