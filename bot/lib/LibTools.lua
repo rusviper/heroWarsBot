@@ -203,7 +203,7 @@ function LibTools:waitOneOf(picTable, timeout, step)
     for i = 0, timeout, step do
         found = LibTools:findFirstOf(picTable)
         if (found ~= nil) then
-            Txt:toast("Найдено! " .. found .. " изображение за " .. (i * step) .. " сек.")
+            Txt:toast("Найдено! " .. found:typeOf() .. " изображение за " .. (i * step) .. " сек.")
             return found
         end
     end
