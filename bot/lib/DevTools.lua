@@ -55,6 +55,7 @@ end
 
 function DevTools:repeatTap20()
     roomsToast("Укажите, куда нажать 20 раз")
+    count = 20
     local hydraStart = LibTools:getTapStartPoint()
     for i = 1,count do
         LibTools:tapWithShow(hydraStart)
