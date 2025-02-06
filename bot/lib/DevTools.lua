@@ -25,14 +25,14 @@ function DevTools:testAction()
 
  -- print(getGameArea()) -- =	2340, 1080
   --Region(1500, 0, 550, 1080):highlight()
-
-  picStart = "port/port1Start"
-  picEnd = ".png"
-  count = 3
+  picSeriesName="GoFree"
+  picStart = "tmp/" .. picSeriesName .. " ("
+  picEnd = ").png"
+  count = 27
    table1 = {}
-   table1[1] = picStart .. picEnd
-   for i = 2,count do
-       table1[i] = picStart .. (i-1) .. picEnd
+   -- tmp/port1Start (1).png
+   for i = 1,count do
+       table1[i] = picStart .. (i) .. picEnd
    end
    LibTools:highlightPics(table1)
 

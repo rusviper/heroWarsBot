@@ -24,8 +24,8 @@ local LibTools = {}
 -- LibTools:tapWithShow(locTable)
 
 
-similarity = 0.69
---similarity = 0.5
+--similarity = 0.69
+similarity = 0.5
 toastOn = true
 
 -- расширенный поиск через exists
