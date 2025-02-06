@@ -28,6 +28,16 @@ local LibTools = {}
 similarity = 0.5
 toastOn = true
 
+-- settings
+--- ожидание для clickIfVisible
+clickIfVisibleDefaultTimeout = 2
+--- подсветка найденного для exists
+highlightDefaultTimeout = 0.5
+--- ожидание для exists, если не указано
+waitDefaultTimeout = 7
+
+
+
 -- расширенный поиск через exists
 -- waitTimeout - таймаут ожидания объекта
 -- showTimeout - таймаут подсветки найденного объекта
@@ -36,10 +46,10 @@ toastOn = true
 function LibTools:exists(picName, waitTimeout, notVisibleCallback, showTimeout)
 
     if showTimeout == nil then
-      showTimeout = 0.5
+      showTimeout = highlightDefaultTimeout
     end
     if waitTimeout == nil then
-        waitTimeout = 7 -- default exists timeout
+        waitTimeout = waitDefaultTimeout -- default exists timeout
     end
     Txt:toast("Ищем " .. tostring(picName))
     btn = exists(Pattern(picName):similar(similarity), waitTimeout)
@@ -55,12 +65,13 @@ function LibTools:exists(picName, waitTimeout, notVisibleCallback, showTimeout)
     return nil
 end
 
+-- ищет картинку в регионе и возвращает если найдено
 function LibTools:findPicOnRegion(region, picName, timeout, notVisibleCallback, waitTimeout)
     if timeout == nil then
       timeout = 1
     end
     if waitTimeout == nil then
-        waitTimeout = 3 -- default exists timeout
+        waitTimeout = waitDefaultTimeout
     end
     if (region == nil) then
     	region = getGameArea()
@@ -69,6 +80,7 @@ function LibTools:findPicOnRegion(region, picName, timeout, notVisibleCallback, 
     -- для крестика регион статуса может закрывать
     Txt:syncToast("Ищем " .. tostring(picName))
 
+    -- ищем картинку picName в регионе region
     btn = region:exists(Pattern(picName):similar(similarity), waitTimeout)
 
     if btn ~= nil then
@@ -97,7 +109,7 @@ end
 
 -- не пишет сообщение, если не найдено
 function LibTools:clickIfVisible(pic)
-    return LibTools:clickOnPicture(pic, 1, nil)
+    return LibTools:clickOnPicture(pic, clickIfVisibleDefaultTimeout, nil)
 end
 
 -- пишет в окошко, что не найдено
@@ -126,15 +138,16 @@ function LibTools:highlightPoint(location, timeout, radius)
     Region(location.x - radius, location.y - radius, radius * 2, radius * 2):highlight(timeout)
 end
 
+--==== PICTURE ON PICTURE
 
---#########################
--- клик по изображению в рамках другого изображения
+-- клик по изображению в рамках другого изображения (например, запределье)
 function LibTools:clickPicOnPic(field, object)
     objectMatch = LibTools:findPicOnPic(field, object)
     if (objectMatch ~= nil) then
     click(objectMatch)
     end
 end
+
 -- ищет изображение в рамках другого изображения
 function LibTools:findPicOnPic(field, object)
     -- подсветим поле
@@ -156,31 +169,39 @@ end
 --==== FIND FIRST
 
 -- параметры пакует в таблицу
-function listToTable(a1, a2, a3, a4, a5)
+function listToTable(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
     rval = {}
     if a1 ~= nil then rval[1] = a1 else return rval end
     if a2 ~= nil then rval[2] = a2 else return rval end
     if a3 ~= nil then rval[3] = a3 else return rval end
     if a4 ~= nil then rval[4] = a4 else return rval end
     if a5 ~= nil then rval[5] = a5 else return rval end
+    if a6 ~= nil then rval[6] = a6 else return rval end
+    if a7 ~= nil then rval[7] = a7 else return rval end
+    if a8 ~= nil then rval[8] = a8 else return rval end
+    if a9 ~= nil then rval[9] = a9 else return rval end
+    if a10 ~= nil then rval[10] = a10 else return rval end
     return rval
 end
 -- ищем первое совпадение по списку изображений. Найденное возвращаем
-function LibTools:findFirstOfList(pic1, pic2, pic3, pic4, pic5)
-    return LibTools:findFirstOf(listToTable(pic1, pic2, pic3, pic4, pic5))
+function LibTools:findFirstOfList(pic1, pic2, pic3, pic4, pic5, pic6, pic7, pic8, pic9, pic10)
+    return LibTools:findFirstOf(listToTable(pic1, pic2, pic3, pic4, pic5, pic6, pic7, pic8, pic9, pic10))
 end
 -- ищем первое совпадение по списку изображений. Найденное возвращаем
 function LibTools:findFirstOf(picTable)
+    -- ищем на одном мгновенном изображении (вкл)
     snapshot()
     for i, m in pairs(picTable) do
         found = LibTools:exists(m, 0, nil, 0)
         if (found ~= nil) then
             hiText = getMatchHiText(m, found)
             print(getMatchPrintText(m, found))
+            -- ищем на одном мгновенном изображении (выкл)
             usePreviousSnap(false)
             return found
         end
     end
+    -- ищем на одном мгновенном изображении (выкл)
     usePreviousSnap(false)
     Txt:toast("Не найдено ничего из " .. MainTools:tableSize(picTable) .. " изображений")
     return nil
@@ -196,14 +217,15 @@ function LibTools:waitOneOf(picTable, timeout, step)
         timeout = 3
     end
     if (step == nil) then
-            step = 0.5
+        step = 0.5
     end
 
+    -- пробуем найти одно из изображений (findFirstOf) каждые step секунд.
     local found = nil
     for i = 0, timeout, step do
         found = LibTools:findFirstOf(picTable)
         if (found ~= nil) then
-            Txt:toast("Найдено! " .. found:typeOf() .. " изображение за " .. (i * step) .. " сек.")
+            Txt:toast("Найдено! " .. found:typeOf() .. ".изображение за " .. (i * step) .. " сек.")
             return found
         end
     end
@@ -215,6 +237,8 @@ end
 
 --==== MASS HIGHLIGHT
 
+-- по очереди ищет каждое изображение. Если оно найдено - подсвечивает. Выводит все найденные в результирующем
+-- окне (print)
 function LibTools:highlightPics(table)
     founds = {}
     snapshot()
@@ -239,7 +263,7 @@ function getMatchPrintText(pic, match)
 end
 
 
--- ищем и показываем все совпадения по одной картинке
+-- ищем и показываем все совпадения на экране по одному шаблону
 function LibTools:showAll(pic)
     allMatches = findAllNoFindException(pic)
     Txt:toast("Всего видно " .. MainTools:tableSize(allMatches) .. " штук")
@@ -319,9 +343,9 @@ function LibTools:getTapStartPoint()
   return locTable
 end
 
--- подсвечивает и нажимает в определённую точку
+-- подсвечивает и нажимает в определённую точку 20 раз каждые 2 сек
 function LibTools:tapWithShow(locTable)
-  LibTools:highlightPoint(locTable)
+  LibTools:highlightPoint(locTable, 2)
   click(locTable)
 end
 

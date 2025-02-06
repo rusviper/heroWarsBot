@@ -25,17 +25,31 @@ firstChest = "tower/tower3Chest1.png"
 smallChest = "tower/tower3Chest.png"
 lastChest = "tower/tower6LastChest.png"
 
+-- при запуске проверяем где находимся:
+-- Сначала надеемся, что находимся на сундуках, проверяем
+-- 1) Если виден сундук башни? Нажимаем chestButton
+-- 1.1) Далее нажимаем nextLevelButton
+-- Если сундук не виден, то доходим до них
+-- 2) В городе? Заходим в башню
+-- 3) В стартовом окне (GoFree)? Нажимаем "вперёд"
+-- 3.1) Заходим на цикл башни
+-- 4) Находимся на последнем этаже? Выходим
+
 function findChest()
    -- ждём возможную загрузку башни или её перемещение
    wait(2)
    roomsToast("Есть че по сундукам?")
-   chest = LibTools:waitOneOf(listToTable(firstChest, smallChest, lastChest), 5)
-   if (chest ~= nil) then
-   	roomsToast("Сундук найден! " .. tostring(chest:getTarget()))
-   else
-   	roomsToast("Сундук не найден! =(")
-   end
-   return chest
+   chest = LibTools:exists(chestIcon, 5)
+    if (chest ~= nil) then
+        roomsToast("Сундук найден! " .. tostring(chest:getTarget()))
+
+        -- нажимаем кнопку под сундуком
+        foundChestButton = LibTools:clickIfVisible(chestButton, 3)
+        return foundChestButton
+    else
+        roomsToast("Сундук не найден! =(")
+        return nil
+    end
 end
 
 -- корневой метод меню ---
@@ -68,8 +82,8 @@ function Tower:towerCollect()
     	roomsToast("Собираем этаж " .. stage)
 
     	click(foundChest)
-    	LibTools:clickOnPicture("tower/tower4Open.png")
-    	nextBtn = findTowerNext()
+    	--nextBtn = LibTools:clickOnPicture(nextLevelButton)
+    	nextBtn = findTowerNext(nextLevelButton)
 
     	if nextBtn == nil then
             -- если нет кнопки 5, то это был последний этаж - выходим
@@ -94,23 +108,26 @@ end
 
 -- возвращает not nil если успешно пройдено
 function skipTowerStartValkyrieIfVisible()
-    towerStartFound = LibTools:exists("tower/tower1Start.png", 1)
+    -- ищем характеристику окна
+    towerStartFound = LibTools:exists(girlIcon)
     if towerStartFound == nil then
         return nil
     end
 
+    -- нажимаем кнопку "вперёд"
     roomsToast("Запускаем башню, первые шаги")
-    LibTools:clickIfVisible("tower/tower1Start.png")
-    LibTools:clickIfVisible("tower/tower2manual.png")
+    goFreeFound = LibTools:clickIfVisible(goFreeButton)
+
     -- ждём возможную загрузку башни (лучше бы сделать через поиск картинки, но корутины не работают =( )
     wait(3)
 
-    return towerStartFound
+    return goFreeFound
 end
 
-function findTowerNext()
+-- ищет картинку в правом нижнем углу
+function findTowerNext(picName)
 	bereich = Region(1300, 600, 600, 400)
-	return LibTools:findPicOnRegion(bereich, "tower/tower5Next.png")
+	return LibTools:findPicOnRegion(bereich, picName)
 end
 
 

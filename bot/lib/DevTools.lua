@@ -19,18 +19,19 @@ function DevTools:showTouchCoords()
   LibTools:highlightPoint(locTable)
 end
 
+-- отладочный метод. Перебирает все изображения с путём "tmp/<picSeriesName> (<i>).png"
+-- count раз от 1 до count
 function DevTools:testAction()
-
-  --DevTools:showTouchCoords()
-
- -- print(getGameArea()) -- =	2340, 1080
+    picSeriesName="GoFree"
+    count = 27
+  -- print(getGameArea()) -- =	2340, 1080
   --Region(1500, 0, 550, 1080):highlight()
-  picSeriesName="GoFree"
+
   picStart = "tmp/" .. picSeriesName .. " ("
   picEnd = ").png"
-  count = 27
+
    table1 = {}
-   -- tmp/port1Start (1).png
+   -- tmp/GoFree (1).png
    for i = 1,count do
        table1[i] = picStart .. (i) .. picEnd
    end
@@ -53,12 +54,13 @@ function DevTools:testAction()
    -- LibTools:findByIndex2(pic, index)
 end
 
+-- Повторяет 20 раз нажатие на одну и ту же точку экрана
 function DevTools:repeatTap20()
     roomsToast("Укажите, куда нажать 20 раз")
     count = 20
-    local hydraStart = LibTools:getTapStartPoint()
+    local hydraStartLoc = LibTools:getTapStartPoint()
     for i = 1,count do
-        LibTools:tapWithShow(hydraStart)
+        LibTools:tapWithShow(hydraStartLoc)
     end
 end
 
