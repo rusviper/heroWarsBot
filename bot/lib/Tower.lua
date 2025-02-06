@@ -61,7 +61,7 @@ function findChest()
 
     --chest = LibTools:exists(chestIcon, 5)
     if (foundChestButton ~= nil) then
-        roomsToast("Сундук найден! " .. tostring(chest:getTarget()))
+        roomsToast("Сундук найден! " .. tostring(foundChestButton:getTarget()))
 
 
         return foundChestButton
