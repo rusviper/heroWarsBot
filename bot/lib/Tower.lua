@@ -116,6 +116,12 @@ function Tower:towerCollect()
     	wait(3)
     	foundChest = findChest()
     end
+
+    -- нажимаем кнопку завершения
+    nextBtn = findTowerNext(nextLevelButton)
+    if nextBtn ~= nil then
+        click(nextBtn)
+    end
     
     -- закрываем сундуки
     Navigation:clickClose()
@@ -146,7 +152,7 @@ end
 
 -- ищет картинку в правом нижнем углу
 function findTowerNext(picName)
-	bereich = Region(1300, 600, 600, 400)
+	bereich = Region(1300, 600, 1000, 600)
 	return LibTools:findPicOnRegion(bereich, picName)
 end
 
