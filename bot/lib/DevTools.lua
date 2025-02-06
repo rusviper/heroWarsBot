@@ -22,10 +22,14 @@ end
 -- отладочный метод. Перебирает все изображения с путём "tmp/<picSeriesName> (<i>).png"
 -- count раз от 1 до count
 function DevTools:testAction()
+    -- тест
+    -- print(getGameArea()) -- =	2340, 1080
+    bereich = Region(1300, 600, 600, 400)
+    bereich:highlight()
+
+    -- метод
     picSeriesName="GoFree"
     count = 27
-  -- print(getGameArea()) -- =	2340, 1080
-  --Region(1500, 0, 550, 1080):highlight()
 
   picStart = "tmp/" .. picSeriesName .. " ("
   picEnd = ").png"
