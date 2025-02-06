@@ -35,7 +35,7 @@ lastChest = "tower/tower6LastChest.png"
 -- 3.1) Заходим на цикл башни
 -- 4) Находимся на последнем этаже? Выходим
 
-function findChest()
+function findChest2()
    -- ждём возможную загрузку башни или её перемещение
    wait(2)
    roomsToast("Есть че по сундукам?")
@@ -51,6 +51,26 @@ function findChest()
         return nil
     end
 end
+function findChest()
+    -- ждём возможную загрузку башни или её перемещение
+    wait(2)
+    roomsToast("Есть че по сундукам?")
+    -- нажимаем кнопку под сундуком
+    foundChestButton = LibTools:clickIfVisible(chestButton, 3)
+
+
+    --chest = LibTools:exists(chestIcon, 5)
+    if (foundChestButton ~= nil) then
+        roomsToast("Сундук найден! " .. tostring(chest:getTarget()))
+
+
+        return foundChestButton
+    else
+        roomsToast("Сундук не найден! =(")
+        return nil
+    end
+end
+
 
 -- корневой метод меню ---
 function Tower:towerCollect()
