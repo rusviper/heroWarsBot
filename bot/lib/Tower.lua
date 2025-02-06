@@ -13,6 +13,14 @@ local Tower = {}
 towerManualLoc = Location(780, 670)
 towerNextLoc = Location(1250, 810)
 
+
+chestButton="tower/ChestBtn.png"
+nextLevelButton="tower/NextLevelBtn.png"
+goFreeButton="tower/GoFreeBtn.png"
+chestIcon="tower/TowerChest.png"
+girlIcon="tower/TowerGirl.png"
+
+
 firstChest = "tower/tower3Chest1.png"
 smallChest = "tower/tower3Chest.png"
 lastChest = "tower/tower6LastChest.png"
@@ -74,7 +82,8 @@ function Tower:towerCollect()
     	wait(3)
     	foundChest = findChest()
     end
-
+    
+    -- закрываем сундуки
     Navigation:clickClose()
 
     -- закрываем заключительное окно

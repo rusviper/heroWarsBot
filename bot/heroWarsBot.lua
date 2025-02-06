@@ -110,7 +110,7 @@ Settings:setScriptDimension(true, 2340)
 setImmersiveMode(true)
 
 -- положение кнопки запуска скрипта
-setButtonPosition(0, 0)
+setButtonPosition(0, 100)
 
 -- стиль текста при подсветке
 --Txt:setTargetTextStyle()
