@@ -59,7 +59,7 @@ function collectBoss(bossIndex)
         click(forwardBtn)
     end
 
-
+    wait(2)
     LibTools:clickOnPicture("outland/outland3Raid.png")
     wait(2)
     LibTools:clickOnPicture("outland/outland4Free.png")
